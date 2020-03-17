@@ -1,4 +1,9 @@
 <?php
+namespace Edu\Cnm\DataDesign;
+
+echo require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
+
+use Ramsey\Uuid\Uuid;
 /*
 This is a class made for registering books in a library or book stored
 @author Opeyemi Jonah <gavrieljonah@gmail.com>
@@ -12,37 +17,37 @@ use validateUuid;
 
 */
 
-  private authorId;
+  private $authorId;
 
 /*
 
 */
 
-  private authorAvatarUrl;
+  private $authorAvatarUrl;
 
 /*
 
 */
 
-  private authorActivationToken;
+  private $authorActivationToken;
 
 /*
 
 */
 
-  private authorEmail;
+  private $authorEmail;
 
 /*
 
 */
 
-  private authorHash;
+  private $authorHash;
 
 /*
 
 */
 
-  private authorUsername;
+  private $authorUsername;
 
 
 /*Accessor for Author Id */
@@ -52,7 +57,7 @@ public function getAuthorId(){
 }
 
 // Mutator for Author Id
-public function setAuthorId(){
+public function setAuthorId($newAuthorId){
   //verify the author id is valid
   try {
   $uuid = self::validateUuid($newAuthorId);
@@ -94,9 +99,9 @@ public function setAuthorId(){
       }
       /*Accessor for Author Email*/
 
-      public function getAuthorEmail(){
-        return ($this->authorEmail);
-      }
+      public function getAuthorEmail(): string {
+        return $this->authorEmail ;
+      };
 
       // Mutator for Author email
       public function setAuthorEmail(){
