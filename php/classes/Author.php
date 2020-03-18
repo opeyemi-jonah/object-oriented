@@ -1,5 +1,5 @@
 <?php
-namespace Edu\Cnm\DataDesign;
+namespace OpeyemiJonah\ObjectOriented;
 
 echo require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 
@@ -49,10 +49,30 @@ use validateUuid;
 
   private $authorUsername;
 
+/*
+ * Making constructors
+ * $newTweetId, $newTweetProfileId, string $newTweetContent, $newTweetDate = null
+ */
+public function __construct($newAuthorId,$newAuthorActivationToken,$newAuthorAvatarUrl = null, string $newAuthorEmail,$newAuthorHash, $newAuthorUsername ) {
+		try {
+			$this->setTAuthorId($newAuthorId);
+			$this->setAuthorActivationToken($newAuthorActivationToken);
+			$this->setAuthorAvatarUrl($newAuthorAvatarUrl);
+			$this->setAuthorEmail($newAuthorEmail);
+			$this->setAuthorHash($newAuthorHash);
+			$this.$this->setAuthorUsername();
+		}
+
+			//determine what exception type was thrown
+		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
+	}
 
 /*Accessor for Author Id */
 
-public function getAuthorId(){
+public function getAuthorId(): uuid{
   return ($this->authorId);
 }
 
@@ -64,53 +84,60 @@ public function setAuthorId($newAuthorId){
   } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
   $exceptionType = get_class($exception);
   throw(new $exceptionType($exception->getMessage(), 0, $exception));
-  }
+  } }
 
   /*Accessor for author avatar url */
 
-  public function getAuthorAvatarUrl(){
-    return ($this->authorUrlId);
+  public function getAuthorAvatarUrl(): string {
+    return ($this->authorAvatarUrl);
   }
 
   // Mutator for author avatar url
-  public function setAuthorAvatarUrl(){
-    //verify the author url amd error handlers
+  public function setAuthorAvatarUrl($newAuthorAvatarUrl): void{
+    //verify the author url and error handlers
     try {
-    $uuid = self::validateUuid($newAuthorAvatarUrl);
+		 $uuid = self::validateUuid($newAuthorAvatarUrl);
+
     } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
     $exceptionType = get_class($exception);
     throw(new $exceptionType($exception->getMessage(), 0, $exception));
     }
-
-    /*Accessor for Author activation token */
+    //convert and store
+    $this->authorAvatarUrl = $newAuthorAvatarUrl;
+}
+    /* Accessor for Author activation token */
 
     public function getAuthorActivationToken(){
       return ($this->authorActivationToken);
     }
 
     // Mutator for author activitation token
-    public function setAuthorActivationToken(){
-      //verify the author id is valid and error handlers
-      try {
-      $uuid = self::validateUuid($newAuthorActivationToken);
-      } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-      $exceptionType = get_class($exception);
-      throw(new $exceptionType($exception->getMessage(), 0, $exception));
-      }
+	public function setAuthorActivationToken($newAuthorActivationToken): void {
+		try {
+			$uuid = self::validateUuid($newAuthorActivationToken);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
+	}
       /*Accessor for Author Email*/
 
       public function getAuthorEmail(): string {
         return $this->authorEmail ;
-      };
+      }
 
       // Mutator for Author email
-      public function setAuthorEmail(){
+      public function setAuthorEmail(string $newAuthorEmail): void{
+
+
         //error handlers
         try {
         $uuid = self::validateUuid($newAuthorEmail);
-        } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+        }
+        catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
         $exceptionType = get_class($exception);
         throw(new $exceptionType($exception->getMessage(), 0, $exception));
+        }
         }
 
         /*Accessor for Author hash from password conversion */
@@ -120,30 +147,29 @@ public function setAuthorId($newAuthorId){
         }
 
         // Mutator for Author hash
-        public function setAuthorHash(){
-          //error handling function and validating author hash
-          try {
-          $uuid = self::validateUuid($newAuthorHash);
-          } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-          $exceptionType = get_class($exception);
-          throw(new $exceptionType($exception->getMessage(), 0, $exception));
+        public function setAuthorHash(string $newAuthorHash): void{
+          //enforce that the hash is properly formatted
+          $newAuthorHash = trim($newAuthorHash);
+          if(empty($newAuthorHash)===true){
+          throw (new \InvalidArgumentException("Please insert the right data!"));
           }
+          if (strlen($newAuthorHash)!==97){
+          	throw(new \RangeException("Limit exceeded, please insert something less"));
+			 }
+		  }
 
           /*Accessor for authorUsername */
 
-          public function getAuthorUsername(){
+          public function getAuthorUsername(): string {
             return ($this->authorUsername);
           }
 
+
           // Mutator for Author Username
-          public function setAuthorUsername(){
+          public function setAuthorUsername(string $newAuthorUsername){
             //verify the author Username is valid and error handlers
-            try {
-            $uuid = self::validateUuid($newAuthorUsername);
-            } catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-            $exceptionType = get_class($exception);
-            throw(new $exceptionType($exception->getMessage(), 0, $exception));
-            }
+            $newAuthorUsername = trim($newAuthorUsername);
+            $newAuthorUsername = filter_var($newAuthorUsername,FILTER_SANITIZE_STRING, FILTER_FLAG_QUOTES);
 
 
 
