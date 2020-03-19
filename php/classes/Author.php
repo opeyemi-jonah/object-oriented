@@ -30,7 +30,7 @@ class author {
 
 	*/
 
-	private $authorActivationToken;
+	private string $authorActivationToken;
 
 	/*
 
@@ -48,7 +48,7 @@ class author {
 
 	*/
 
-	private $authorUsername;
+	private string $authorUsername;
 
 	/*
 	 * Making constructors
@@ -112,7 +112,7 @@ class author {
 		return ($this->authorActivationToken);
 	}
 
-	// Mutator for author activitation token
+	// Mutator for author activation token
 	public function setAuthorActivationToken($newAuthorActivationToken): void {
 		try {
 			$uuid = self::validateUuid($newAuthorActivationToken);

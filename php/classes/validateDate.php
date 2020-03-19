@@ -90,8 +90,8 @@ trait ValidateDate {
 	private static function validateTime(string $newTime) : string {
 		// treat the date as a mySQL date string: H:i:s[.u]
 		$newTime = trim($newTime);
-		if((preg_match("/^(\d{2}):(\d{2}):(\d{2})(?(?=\.)\.(\d{1,6})$/", $newTime, $matches)) !== 1) {
-			throw(new InvalidArgumentException("time is not a valid time"));
+		if((preg_match("/^(\d{2}):(\d{2}):(\d{2})(?(?=\.)\.(\d{1,6}))$/", $newTime, $matches)) !== 1) {
+			throw(new \InvalidArgumentException("time is not a valid time"));
 		}
 		// verify the date is really a valid calendar date
 		$hour = intval($matches[1]);
