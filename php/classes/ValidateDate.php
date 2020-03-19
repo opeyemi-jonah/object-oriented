@@ -1,5 +1,5 @@
 <?php
-namespace Deepdivedylan\DataDesign;
+namespace OpeyemiJonah\ObjectOriented;
 use InvalidArgumentException;
 
 /**

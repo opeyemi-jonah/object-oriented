@@ -13,7 +13,7 @@ This is a class made for registering books in a library or book stored
 */
 
 
-class author implements \JsonSerializable {
+class Author implements \JsonSerializable {
 	use ValidateUuid;
 
 	/*
@@ -56,7 +56,7 @@ class author implements \JsonSerializable {
 	 * Making constructors
 	 *
 	 */
-	public function __construct($newAuthorId, ?string $newAuthorActivationToken, $newAuthorAvatarUrl = null, string $newAuthorEmail,string $newAuthorHash,string $newAuthorUsername) {
+	public function __construct($newAuthorId, ?string $newAuthorActivationToken, $newAuthorAvatarUrl = null,$newAuthorEmail,string $newAuthorHash,string $newAuthorUsername) {
 		try {
 			$this->setAuthorId($newAuthorId);
 			$this->setAuthorActivationToken($newAuthorActivationToken);
@@ -69,6 +69,7 @@ class author implements \JsonSerializable {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
+
 	}
 
 	/*Accessor for Author Id */
@@ -139,14 +140,20 @@ $this->authorId= $uuid;
 	// Mutator for Author email
 	public function setAuthorEmail(string $newAuthorEmail): void {
 
-
-		//error handlers
-		try {
-			$uuid = self::validateUuid($newAuthorEmail);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-			$exceptionType = get_class($exception);
-			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		// verify the email is secure
+		$newProfileEmail = trim($newAuthorEmail);
+		$newProfileEmail = filter_var($newAuthorEmail, FILTER_VALIDATE_EMAIL);
+		if(empty($newAuthorEmail) === true) {
+			throw(new \InvalidArgumentException("Author email is empty or insecure"));
 		}
+
+		// verify the email will fit in the database
+		if(strlen($newAuthorEmail) > 128) {
+			throw(new \RangeException("Author email is too large"));
+		}
+
+		// store the email
+		$this->AuthorEmail = $newAuthorEmail;
 	}
 
 	/*Accessor for Author hash from password conversion */
@@ -193,11 +200,7 @@ if (strlen($newAuthorUsername)>32){
 	public function jsonSerialize() : array {
 		$fields = get_object_vars($this);
 
-		$fields["tweetId"] = $this->tweetId->toString();
-		$fields["tweetProfileId"] = $this->tweetProfileId->toString();
-
-		//format the date so that the front end can consume it
-		$fields["tweetDate"] = round(floatval($this->tweetDate->format("U.u")) * 1000);
+		$fields["authorId"] = $this->authorId->toString();
 		return($fields);
 	}
 
