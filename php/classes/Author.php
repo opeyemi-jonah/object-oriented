@@ -1,20 +1,20 @@
 <?php
 namespace OpeyemiJonah\ObjectOriented;
-use Ramsey\Uuid\src\Uuid;
+
 require_once("autoload.php");
 require_once(dirname(__DIR__) . "/vendor/autoload.php");
-require ("validateUuid.php");
 
 
+use Ramsey\Uuid\Uuid;
 /*
 This is a class made for registering books in a library or book stored
 @author Opeyemi Jonah <gavrieljonah@gmail.com>
 
 */
-use validateUuid;
 
-class author {
 
+class author implements \JsonSerializable {
+	use ValidateUuid;
 
 	/*
 
@@ -32,7 +32,7 @@ class author {
 
 	*/
 
-	private string $authorActivationToken;
+	private $authorActivationToken;
 
 	/*
 
@@ -50,15 +50,15 @@ class author {
 
 	*/
 
-	private string $authorUsername;
+	private $authorUsername;
 
 	/*
 	 * Making constructors
-	 * $newTweetId, $newTweetProfileId, string $newTweetContent, $newTweetDate = null
+	 *
 	 */
 	public function __construct($newAuthorId, ?string $newAuthorActivationToken, $newAuthorAvatarUrl = null, string $newAuthorEmail,string $newAuthorHash,string $newAuthorUsername) {
 		try {
-			$this->setTAuthorId($newAuthorId);
+			$this->setAuthorId($newAuthorId);
 			$this->setAuthorActivationToken($newAuthorActivationToken);
 			$this->setAuthorAvatarUrl($newAuthorAvatarUrl);
 			$this->setAuthorEmail($newAuthorEmail);
@@ -81,10 +81,12 @@ class author {
 	}
 
 // Mutator for Author Id
-	public function setTAuthorId($newAuthorId): void {
+	public function setAuthorId($newAuthorId): void {
+		var_dump($newAuthorId);
 		//verify the author id is valid
 		try {
 			$uuid = self::validateUuid($newAuthorId);
+			var_dump($uuid);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -188,7 +190,16 @@ if (strlen($newAuthorUsername)>32){
 		$this->authorUsername = $newAuthorUsername;
 
 	}
+	public function jsonSerialize() : array {
+		$fields = get_object_vars($this);
 
+		$fields["tweetId"] = $this->tweetId->toString();
+		$fields["tweetProfileId"] = $this->tweetProfileId->toString();
+
+		//format the date so that the front end can consume it
+		$fields["tweetDate"] = round(floatval($this->tweetDate->format("U.u")) * 1000);
+		return($fields);
+	}
 
 }
 ?>

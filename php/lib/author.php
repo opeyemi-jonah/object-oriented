@@ -1,4 +1,3 @@
-
 <?php
 
 use OpeyemiJonah\ObjectOriented\author;
@@ -6,10 +5,9 @@ use OpeyemiJonah\ObjectOriented\author;
 
 require_once (dirname(__DIR__,1)."/classes/Author.php");
 
-
 function bar() {
 
-		$authorId = "1476a610-69eb-11ea-bc55-0242ac130003";
+		$authorId = "7b638665-773f-4474-a692-6402c3539b66";
 		$authorActivationToken = "o7AFoTGE9xjQiHQK6dAa";
 		$authorAvatarUrl = "https://avatars.discourse.org/v4/letter/m/a8b319/45.png";
 		$authorUsername = "Gabill007";
@@ -18,9 +16,7 @@ function bar() {
 
 		$author = new author($authorId, $authorActivationToken, $authorAvatarUrl, $authorUsername, $authorEmail, $authorHash);
 		echo var_dump($author);
-	echo "$authorEmail $authorActivationToken $authorHash ";
-
-
+	echo "$authorEmail <br> $authorActivationToken <br> $authorHash ";
 	}
 bar();
 
