@@ -1,208 +1,203 @@
 <?php
 namespace OpeyemiJonah\ObjectOriented;
-
-require_once("autoload.php");
 require_once(dirname(__DIR__) . "/vendor/autoload.php");
+use ramsey\Uuid\Uuid;
 
-
-use Ramsey\Uuid\Uuid;
-/*
-This is a class made for registering books in a library or book stored
-@author Opeyemi Jonah <gavrieljonah@gmail.com>
-
-*/
-
-
-class Author implements \JsonSerializable {
+class Author implements \JsonSerializable{
 	use ValidateUuid;
-
+	/**
+	 * id for this author; this is the primary key
+	 * @var Uuid $profileId
+	 **/
 	/*
-
-	*/
+	 * create table author(
+  authorId binary(16) not null,
+  authorActivationToken char(32),
+  authorAvatarUrl varchar(255),
+  authorEmail varchar(128) not null,
+  authorHash char(97) not null,
+  authorUsername varchar(32) not null,
+  unique(authorEmail),
+  unique(authorUsername),
+  primary key(authorId)
+);
+	 */
 
 	private $authorId;
 
-	/*
-
-	*/
+	private $authorActivationToken;
 
 	private $authorAvatarUrl;
 
-	/*
-
-	*/
-
-	private $authorActivationToken;
-
-	/*
-
-	*/
-
 	private $authorEmail;
 
-	/*
-
-	*/
-
 	private $authorHash;
-
-	/*
-
-	*/
 
 	private $authorUsername;
 
 	/*
-	 * Making constructors
-	 *
+	 * Constructors
 	 */
-	public function __construct($newAuthorId, ?string $newAuthorActivationToken, $newAuthorAvatarUrl = null,$newAuthorEmail,string $newAuthorHash,string $newAuthorUsername) {
+	public function __construct($newAuthorId, ?string $newAuthorActivationToken,string $newAuthorAvatarUrl, string $newAuthorEmail, string $newAuthorHash, string $newAuthorUsername) {
 		try {
 			$this->setAuthorId($newAuthorId);
 			$this->setAuthorActivationToken($newAuthorActivationToken);
+			$this->setAuthorUsername($newAuthorUsername);
 			$this->setAuthorAvatarUrl($newAuthorAvatarUrl);
 			$this->setAuthorEmail($newAuthorEmail);
 			$this->setAuthorHash($newAuthorHash);
-			$this->setAuthorUsername($newAuthorUsername);
-		} //determine what exception type was thrown
-		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException |\TypeError | \Exception $exception) {
+			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
-
 	}
 
-	/*Accessor for Author Id */
-	private static function validateUuid($newAuthorId) {
-		echo "hello";
-	}
+	/*
+	 * Getters for attributes
+	 */
 
-	public function getAuthorId(): uuid {
+	/**
+	 * @return Uuid
+	 */
+	public function getAuthorId(): Uuid {
 		return ($this->authorId);
 	}
 
-// Mutator for Author Id
-	public function setAuthorId($newAuthorId): void {
-		var_dump($newAuthorId);
-		//verify the author id is valid
-		try {
-			$uuid = self::validateUuid($newAuthorId);
-			var_dump($uuid);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-			$exceptionType = get_class($exception);
-			throw(new $exceptionType($exception->getMessage(), 0, $exception));
-		}
-$this->authorId= $uuid;
-	}
-
-	/*Accessor for author avatar url */
-
-	public function getAuthorAvatarUrl(): string {
-		return ($this->authorAvatarUrl);
-	}
-
-	// Mutator for author avatar url
-	public function setAuthorAvatarUrl($newAuthorAvatarUrl): void {
-		//verify the author url and error handlers
-		try {
-			$uuid = self::validateUuid($newAuthorAvatarUrl);
-
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-			$exceptionType = get_class($exception);
-			throw(new $exceptionType($exception->getMessage(), 0, $exception));
-		}
-		//convert and store
-		$this->authorAvatarUrl = $newAuthorAvatarUrl;
-	}
-
-	/* Accessor for Author activation token */
-
-	public function getAuthorActivationToken(): ?string {
+	/**
+	 * @return mixed
+	 */
+	public function getAuthorActivationToken() :?string {
 		return ($this->authorActivationToken);
 	}
 
-	// Mutator for author activation token
-	public function setAuthorActivationToken($newAuthorActivationToken): void {
+	/**
+	 * @return mixed
+	 */
+	public function getAuthorUsername() : string {
+		return ($this->authorUsername);
+	}
+
+	/**
+	 * @param mixed $authorAvatarUrl
+	 */
+	public function getAuthorAvatarUrl($authorAvatarUrl): void {
+		$this->authorAvatarUrl = $authorAvatarUrl;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAuthorEmail():string {
+		return ($this->authorEmail);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAuthorHash() : string {
+		return ($this->authorHash);
+	}
+	/*
+	 * Mutator
+	 */
+
+	/**
+	 * @param Uuid $newAuthorId
+	 */
+	public function setAuthorId(Uuid $newAuthorId): void {
 		try {
-			$uuid = self::validateUuid($newAuthorActivationToken);
+			$uuid = self::validateUuid($newAuthorId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
+		$this->authorId = $newAuthorId;
 	}
 
-	/*Accessor for Author Email*/
+	/**
+	 * @param mixed $authorActivationToken
+	 */
+	public function setAuthorActivationToken(?string $newAuthorActivationToken): void {
+		if($newAuthorActivationToken===null){
+			throw (new \InvalidArgumentException("Not token"));
+		}
+		if (strlen($newAuthorActivationToken)!==32){
+			throw (new \RangeException("Must be 32 characters"));
+		}
 
-	public function getAuthorEmail(): string {
-		return $this->authorEmail;
+		$this->authorActivationToken = $newAuthorActivationToken;
 	}
 
-	// Mutator for Author email
+	/**
+	 * @param string $newAuthorUsername
+	 */
+	public function setAuthorUsername(string $newAuthorUsername): void {
+		$newAuthorUsername = trim($newAuthorUsername);
+		$newAuthorUsername = filter_var($newAuthorUsername,FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(strlen($newAuthorUsername)>32){
+			throw (new \RangeException("Username is too long"));
+		}
+		if(empty($newAuthorUsername)===true){
+			throw (new \InvalidArgumentException("Not a secure username or it is empty"));
+		}
+		$this->authorUsername = $newAuthorUsername;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function setAuthorAvatarUrl(string $newAuthorAvatarUrl) : void {
+
+		$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
+		$newAuthorAvatarUrl = filter_var($newAuthorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+
+		// verify the avatar URL will fit in the database
+		if(strlen($newAuthorAvatarUrl) > 255) {
+			throw(new \RangeException("image content too large"));
+		}
+		// store the image cloudinary content
+		$this->authorAvatarUrl = $newAuthorAvatarUrl;
+	}
+
+	/**
+	 * @param mixed $authorEmail
+	 */
 	public function setAuthorEmail(string $newAuthorEmail): void {
-
-		// verify the email is secure
-		$newProfileEmail = trim($newAuthorEmail);
-		$newProfileEmail = filter_var($newAuthorEmail, FILTER_VALIDATE_EMAIL);
-		if(empty($newAuthorEmail) === true) {
-			throw(new \InvalidArgumentException("Author email is empty or insecure"));
+		$newAuthorEmail= trim($newAuthorEmail);
+		$newAuthorEmail = filter_var($newAuthorEmail, FILTER_VALIDATE_EMAIL);
+		if(empty($newAuthorEmail)===true){
+			throw (new \InvalidArgumentException("Please make sure it is an email"));
 		}
-
-		// verify the email will fit in the database
-		if(strlen($newAuthorEmail) > 128) {
-			throw(new \RangeException("Author email is too large"));
+		if(strlen($newAuthorEmail)>128){
+			throw (new \RangeException("Email is too long"));
 		}
-
-		// store the email
-		$this->AuthorEmail = $newAuthorEmail;
+		$this->authorEmail = $newAuthorEmail;
 	}
 
-	/*Accessor for Author hash from password conversion */
-
-	public function getAuthorHash(): string {
-		return ($this->authorHash);
-	}
-
-	// Mutator for Author hash
-	public function setAuthorHash(string $newAuthorHash): void {
+	/**
+	 * @param mixed $authorHash
+	 */
+	public function setAuthorHash($newAuthorHash): void {
 		//enforce that the hash is properly formatted
 		$newAuthorHash = trim($newAuthorHash);
-		if(empty($newAuthorHash) === true) {
-			throw (new \InvalidArgumentException("Please insert the right data!"));
+		if(empty($newAuthorHash)===true){
+			throw (new \InvalidArgumentException("Not a valid hash"));
 		}
-		//change !== to > for demo sake
-		if(strlen($newAuthorHash) > 97) {
-			throw(new \RangeException("Limit exceeded, please insert something less"));
+		if(strlen($newAuthorHash)!==97){
+			throw (new \RangeException("Must be 97 character"));
 		}
+		$this->authorHash = $newAuthorHash;
 	}
 
-	/*Accessor for authorUsername */
-
-	public function getAuthorUsername(): string {
-		return ($this->authorUsername);
-	}
-
-
-	// Mutator for Author Username
-	public function setAuthorUsername(string $newAuthorUsername) {
-		//verify the author Username is valid and error handlers
-		$newAuthorUsername = trim($newAuthorUsername);
-		$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING);
-if (empty($newAuthorUsername)=== true){
-	throw(new \InvalidArgumentException("username is empty or insecure "));
-}
-if (strlen($newAuthorUsername)>32){
-	throw (new \RangeException("Username is too long. Please use shorter username"));
-}
-//store the username
-		$this->authorUsername = $newAuthorUsername;
-
-	}
-	public function jsonSerialize() : array {
+	public function jsonSerialize() {
 		$fields = get_object_vars($this);
-
 		$fields["authorId"] = $this->authorId->toString();
-		return($fields);
+		unset($fields["authorActivationToken"]);
+		unset($fields["authorHash"]);
+		return ($fields);
+
 	}
 
+
 }
-?>
