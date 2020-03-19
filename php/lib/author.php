@@ -4,7 +4,7 @@
 use OpeyemiJonah\ObjectOriented\author;
 //require_once("/etc/apache2/capstone-mysql/Secrets.php");
 
-require_once (dirname(__DIR__,2)."\php\classes\Author.php");
+require_once (dirname(__DIR__,1)."/classes/Author.php");
 
 
 function bar() {
@@ -14,7 +14,7 @@ function bar() {
 		$authorAvatarUrl = "https://avatars.discourse.org/v4/letter/m/a8b319/45.png";
 		$authorUsername = "Gabill007";
 		$authorEmail = "gabill007.oj@gmail.com";
-		$authorHash = "1234hGabill75ighowfan";
+		$authorHash = "1234hGabill75ighowfangvhg";
 
 		$author = new author($authorId, $authorActivationToken, $authorAvatarUrl, $authorUsername, $authorEmail, $authorHash);
 		echo var_dump($author);
