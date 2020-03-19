@@ -1,16 +1,18 @@
 <?php
 namespace OpeyemiJonah\ObjectOriented;
-
+use Ramsey\Uuid\src\Uuid;
 require_once("autoload.php");
 require_once(dirname(__DIR__) . "/vendor/autoload.php");
+require ("validateUuid.php");
 
-use Ramsey\Uuid\Uuid;
+
 /*
 This is a class made for registering books in a library or book stored
 @author Opeyemi Jonah <gavrieljonah@gmail.com>
 
 */
 use validateUuid;
+
 class author {
 
 
@@ -54,14 +56,14 @@ class author {
 	 * Making constructors
 	 * $newTweetId, $newTweetProfileId, string $newTweetContent, $newTweetDate = null
 	 */
-	public function __construct($newAuthorId, $newAuthorActivationToken, $newAuthorAvatarUrl = null, string $newAuthorEmail, $newAuthorHash, $newAuthorUsername) {
+	public function __construct($newAuthorId, ?string $newAuthorActivationToken, $newAuthorAvatarUrl = null, string $newAuthorEmail,string $newAuthorHash,string $newAuthorUsername) {
 		try {
 			$this->setTAuthorId($newAuthorId);
 			$this->setAuthorActivationToken($newAuthorActivationToken);
 			$this->setAuthorAvatarUrl($newAuthorAvatarUrl);
 			$this->setAuthorEmail($newAuthorEmail);
 			$this->setAuthorHash($newAuthorHash);
-			$this . $this->setAuthorUsername();
+			$this->setAuthorUsername($newAuthorUsername);
 		} //determine what exception type was thrown
 		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
@@ -70,13 +72,16 @@ class author {
 	}
 
 	/*Accessor for Author Id */
+	private static function validateUuid($newAuthorId) {
+		echo "hello";
+	}
 
 	public function getAuthorId(): uuid {
 		return ($this->authorId);
 	}
 
 // Mutator for Author Id
-	public function setAuthorId($newAuthorId) {
+	public function setTAuthorId($newAuthorId): void {
 		//verify the author id is valid
 		try {
 			$uuid = self::validateUuid($newAuthorId);
@@ -84,6 +89,7 @@ class author {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
+$this->authorId= $uuid;
 	}
 
 	/*Accessor for author avatar url */
@@ -154,7 +160,8 @@ class author {
 		if(empty($newAuthorHash) === true) {
 			throw (new \InvalidArgumentException("Please insert the right data!"));
 		}
-		if(strlen($newAuthorHash) !== 97) {
+		//change !== to > for demo sake
+		if(strlen($newAuthorHash) > 97) {
 			throw(new \RangeException("Limit exceeded, please insert something less"));
 		}
 	}
@@ -170,7 +177,7 @@ class author {
 	public function setAuthorUsername(string $newAuthorUsername) {
 		//verify the author Username is valid and error handlers
 		$newAuthorUsername = trim($newAuthorUsername);
-		$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING, FILTER_FLAG_QUOTES);
+		$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING);
 if (empty($newAuthorUsername)=== true){
 	throw(new \InvalidArgumentException("username is empty or insecure "));
 }
@@ -181,5 +188,7 @@ if (strlen($newAuthorUsername)>32){
 		$this->authorUsername = $newAuthorUsername;
 
 	}
+
+
 }
 ?>
