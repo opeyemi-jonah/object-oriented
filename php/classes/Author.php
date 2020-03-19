@@ -1,7 +1,8 @@
 <?php
 namespace OpeyemiJonah\ObjectOriented;
 
-echo require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
+require_once("autoload.php");
+require_once(dirname(__DIR__) . "/vendor/autoload.php");
 
 use Ramsey\Uuid\Uuid;
 /*
@@ -11,7 +12,8 @@ This is a class made for registering books in a library or book stored
 */
 
 class author{
-use validateUuid;
+
+	use validateUuid;
 
 /*
 
@@ -107,7 +109,7 @@ public function setAuthorId($newAuthorId){
 }
     /* Accessor for Author activation token */
 
-    public function getAuthorActivationToken(){
+    public function getAuthorActivationToken(): ?string{
       return ($this->authorActivationToken);
     }
 
