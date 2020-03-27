@@ -1,8 +1,7 @@
 USE ojonah;
 
-
 CREATE TABLE author(
-	authorId BINARY(16) NOT NULL,
+	authorId BINARY(50) NOT NULL,
 	authorActivationToken CHAR (32) ,
 	authorAvatarUrl VARCHAR (255),
 	authorEmail VARCHAR(128) NOT NULL,
@@ -13,3 +12,4 @@ CREATE TABLE author(
 	PRIMARY KEY (authorId)
 
 );
+

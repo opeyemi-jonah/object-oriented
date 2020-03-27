@@ -199,11 +199,13 @@ class Author implements \JsonSerializable {
 	public function insert(\PDO $pdo) : void {
 
 		// create query template
-		$query = "INSERT INTO author(authorId,authorActivationToken, authorAvatarUrl, authorEmail, authorHash,authorUsername) VALUES(:authorId,:authorActivationToken, :authorAvatarUrl, :authorEmail, :authorHash, :authorUsername)";
+		$query = "INSERT INTO author(authorId,authorActivationToken, authorAvatarUrl, authorEmail, authorHash,authorUsername) 
+						VALUES(:authorId,:authorActivationToken, :authorAvatarUrl, :authorEmail, :authorHash, :authorUsername)";
 		$statement = $pdo->prepare($query);
 
-		$parameters = ["authorId"=> $this->authorId->getBytes(),"authorActivationToken"=>$this->authorActivationToken->getBytes(),"authorEmail"=>$this->authorEmail->getBytes(),
-								"authorHash"=>$this->authorHash->getBytes(), "authorUsername"=>$this->authorUsername->getBytes()];
+		//binding table attributes to placeholders
+		$parameters = ["authorId"=> $this->authorId,"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
+								"authorHash"=>$this->authorHash, "authorUsername"=>$this->authorUsername];
 		$statement->execute($parameters);
 	}
 
@@ -240,9 +242,8 @@ class Author implements \JsonSerializable {
 
 
 //binds class objects to sql placeholders
-		$parameters = ["authorId" => $this->authorId->getBytes(), "authorActivationToken"=> $this->authorActivationToken->getBytes(),
-			"authorAvatarUrl" => $this->authorAvatarUrl->getBytes(), "authorEmail" => $this->authorEmail->getBytes(), "authorHash"=>$this->authorHash->getBytes(),
-			"authorUsername"=>$this->authorUsername->getBytes()];
+		$parameters = ["authorId"=> $this->authorId,"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
+			"authorHash"=>$this->authorHash, "authorUsername"=>$this->authorUsername];
 		$statement->execute($parameters);
 	}
 
@@ -275,6 +276,54 @@ class Author implements \JsonSerializable {
 		}
 return ($author);
 	}
+	public static function getSingleObject(\PDO $pdo, $authorId): \SplFixedArray {
+		//create query template
+		$query = "SELECT authorId,
+		authorActivationToken,
+		authorAvatarUrl,
+		authorEmail,
+		authorHash,
+		authorUsername 
+		FROM author WHERE authorId = :authorId";
+		$statement = $pdo->prepare($query);
+
+		//bind the objects to their respective placeholders in the table
+		$parameters = ["authorId" => $authorId->getBytes()];
+		$statement->execute($parameters);
+
+		//grab author from database
+		try {
+			$author = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$author = new Author($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+
+			}
+		} catch(\Exception $exception) {
+
+			throw  (new \PDOException($exception->getMessage()));
+		}
+		return ($author);
+	}
+
+	public static function getObject(\PDO $pdo, $authorId): array {
+		$query = "SELECT authorId,
+		authorActivationToken,
+		authorAvatarUrl,
+		authorEmail,
+		authorHash,
+		authorUsername 
+		FROM author WHERE authorId = :authorId";
+
+		$sth = $pdo->prepare($query);
+
+		$sth->bindValue(':authorId', $authorId, PDO::PARAM_STR);
+		$sth->setFetchMode();
+		var_dump($sth);
+
+	}
+
 
 
 	public function jsonSerialize() : array {
