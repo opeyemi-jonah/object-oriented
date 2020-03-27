@@ -196,6 +196,8 @@ class Author implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError if $pdo is not a PDO connection object
 	 **/
+
+
 	public function insert(\PDO $pdo) : void {
 
 		// create query template
@@ -223,8 +225,8 @@ class Author implements \JsonSerializable {
 		$query = "DELETE FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
 
-		$parameters = ["authorId" =>$this->authorId->getBytes()];
-		$statement -execute($parameters);
+		$parameters = ["authorId" =>$this->authorId];
+		$statement ->execute($parameters);
 	}
 
 	/**
@@ -237,46 +239,46 @@ class Author implements \JsonSerializable {
 	public function update(\PDO $pdo) : void {
 
 		// create query template
-		$query = "UPDATE author SET authorId : = authorId, authorActivationToken =:authorActivationToken, authorAvatarUrl : = authorAvatarUrl, authorEmail = :authorEmail, authorHash = :authorHash, authorUsername = :authorUsername WHERE authorId = : authorId";
+		$query = "UPDATE author SET authorId  = :authorId,
+ 	authorActivationToken =:authorActivationToken,
+ 	authorAvatarUrl  = :authorAvatarUrl, 
+ 	authorEmail = :authorEmail,
+  	authorHash = :authorHash, 
+	authorUsername = :authorUsername
+ 					WHERE authorId = :authorId";
+
 		$statement = $pdo->prepare($query);
 
 
 //binds class objects to sql placeholders
-		$parameters = ["authorId"=> $this->authorId,"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
-			"authorHash"=>$this->authorHash, "authorUsername"=>$this->authorUsername];
+		$parameters = ["authorId"=> $this->authorId,
+							"authorActivationToken"=>$this->authorActivationToken,
+							"authorAvatarUrl"=>$this->authorAvatarUrl,
+								"authorEmail"=>"gabill07@gmail.co.uk",
+								"authorHash"=>$this->authorHash,
+								"authorUsername"=>$this->authorUsername];
+
 		$statement->execute($parameters);
 	}
 
 
 
-	public static function getAllObjects(\PDO $pdo) : \SPLFixedArray {
+	public static function getAllObjects(\PDO $pdo) {
 		// create query template
-		$query= "SELECT authorId,
-					authorActivationToken,
-					authorAvatarUrl,
-					authorEmail,
-					authorHash,
-					authorUsername 
-					FROM author";
+		$query= "SELECT * FROM author";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 
-		//build an array
-		$author = new \SplFixedArray($statement->rowCount());
-		$statement->setFetchMode(\PDO:: FETCH_ASSOC);
-		while(($row = $statement->fetch())!== false){
-			try{
-				$author = new Author($row["authorId"],$row["authorActivationToken"],$row["authorAvatarUrl"],$row["authorEmail"],$row["authorHash"],$row["authorUsername"]);
-				$author[$author->key()]= $author;
-				$author->next();
-			} catch(\Exception $e){
-				//if the row could not be converted
-				throw (new \PDOException($e->getMessage(),0,$e));
-			}
-		}
-return ($author);
+		//Fetch all authors from database
+		$row = $statement->fetchAll();
+
+		//returned Array of author
+		return $row;
+
+
+
 	}
-	public static function getSingleObject(\PDO $pdo, $authorId): \SplFixedArray {
+	public static function getSingleObject(\PDO $pdo, $authorId) {
 		//create query template
 		$query = "SELECT authorId,
 		authorActivationToken,
@@ -288,41 +290,24 @@ return ($author);
 		$statement = $pdo->prepare($query);
 
 		//bind the objects to their respective placeholders in the table
-		$parameters = ["authorId" => $authorId->getBytes()];
+		$parameters = ["authorId" => $authorId];
 		$statement->execute($parameters);
 
 		//grab author from database
-		try {
+
 			$author = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
-			if($row !== false) {
-				$author = new Author($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
-
+			if($row !== false){
+				//instantiate author object and push data into it
+				$author = new Author($row["authorId"],$row["authorActivationToken"],$row["authorAvatarUrl"],$row["authorEmail"],$row["authorHash"],$row["authorUsername"]);
 			}
-		} catch(\Exception $exception) {
+			//var_dump($author);
+			return ($author);
 
-			throw  (new \PDOException($exception->getMessage()));
-		}
-		return ($author);
-	}
-
-	public static function getObject(\PDO $pdo, $authorId): array {
-		$query = "SELECT authorId,
-		authorActivationToken,
-		authorAvatarUrl,
-		authorEmail,
-		authorHash,
-		authorUsername 
-		FROM author WHERE authorId = :authorId";
-
-		$sth = $pdo->prepare($query);
-
-		$sth->bindValue(':authorId', $authorId, PDO::PARAM_STR);
-		$sth->setFetchMode();
-		var_dump($sth);
 
 	}
+
 
 
 
