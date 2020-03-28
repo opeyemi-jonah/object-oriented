@@ -1,7 +1,7 @@
 <?php
 namespace OpeyemiJonah\ObjectOriented;
 
-require_once("autoload.php");
+ require_once("autoload.php");
 require_once(dirname(__DIR__) . "/vendor/autoload.php");
 
 
@@ -13,7 +13,7 @@ This is a class made for registering books in a library or book stored
 */
 
 
-class Author implements \JsonSerializable {
+class Author implements \JsonSerializable  {
 	use ValidateUuid;
 
 	/*
@@ -67,7 +67,7 @@ class Author implements \JsonSerializable {
 
 	/*Accessor for Author Id */
 
-	public function getAuthorId(): uuid {
+	public function getAuthorId(): Uuid {
 		return ($this->authorId);
 	}
 
@@ -81,8 +81,9 @@ class Author implements \JsonSerializable {
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
-		}var_dump($newAuthorId);
-		$this->authorId= $uuid; echo "$uuid";
+		}
+		$this->authorId= $uuid;
+		echo "$uuid";
 
 	}
 
@@ -198,7 +199,8 @@ class Author implements \JsonSerializable {
 	 **/
 
 
-	public function insert(\PDO $pdo) : void {
+	public function insert(\PDO $pdo) : void  {
+
 
 		// create query template
 		$query = "INSERT INTO author(authorId,authorActivationToken, authorAvatarUrl, authorEmail, authorHash,authorUsername) 
@@ -206,7 +208,7 @@ class Author implements \JsonSerializable {
 		$statement = $pdo->prepare($query);
 
 		//binding table attributes to placeholders
-		$parameters = ["authorId"=> $this->authorId,"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
+		$parameters = ["authorId"=> $this->getAuthorId()->getBytes(),"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
 								"authorHash"=>$this->authorHash, "authorUsername"=>$this->authorUsername];
 		$statement->execute($parameters);
 	}
@@ -225,7 +227,7 @@ class Author implements \JsonSerializable {
 		$query = "DELETE FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
 
-		$parameters = ["authorId" =>$this->authorId];
+		$parameters = ["authorId" =>$this->getAuthorId()->getBytes()];
 		$statement ->execute($parameters);
 	}
 
@@ -251,7 +253,7 @@ class Author implements \JsonSerializable {
 
 
 //binds class objects to sql placeholders
-		$parameters = ["authorId"=> $this->authorId,
+		$parameters = ["authorId"=> $this->getAuthorId()->getBytes(),
 							"authorActivationToken"=>$this->authorActivationToken,
 							"authorAvatarUrl"=>$this->authorAvatarUrl,
 								"authorEmail"=>"gabill07@gmail.co.uk",
@@ -263,22 +265,38 @@ class Author implements \JsonSerializable {
 
 
 
-	public static function getAllObjects(\PDO $pdo) {
+	public function getAllObjects(\PDO $pdo) {
 		// create query template
 		$query= "SELECT * FROM author";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 
+		// build an array of tweets
+		$authors = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$author = new Author($row["authorId"],$row["authorActivationToken"],$row["authorAvatarUrl"],$row["authorEmail"],$row["authorHash"],$row["authorUsername"]);
+				$authors[$authors->key()] = $author;
+				$authors->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		return ($authors);
+
 		//Fetch all authors from database
-		$row = $statement->fetchAll();
+		//$row = $statement->fetchAll();
 
 		//returned Array of author
-		return $row;
+		//return $row;
 
 
 
 	}
-	public static function getSingleObject(\PDO $pdo, $authorId) {
+	public function getSingleObject(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,
 		authorActivationToken,
@@ -288,9 +306,14 @@ class Author implements \JsonSerializable {
 		authorUsername 
 		FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
+		try {
+			$authorId = self::validateUuid($authorId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
 
 		//bind the objects to their respective placeholders in the table
-		$parameters = ["authorId" => $authorId];
+		$parameters = ["authorId" => $authorId->getBytes()];
 		$statement->execute($parameters);
 
 		//grab author from database
