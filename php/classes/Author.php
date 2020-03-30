@@ -256,9 +256,9 @@ class Author implements \JsonSerializable  {
 		$parameters = ["authorId"=> $this->getAuthorId()->getBytes(),
 							"authorActivationToken"=>$this->authorActivationToken,
 							"authorAvatarUrl"=>$this->authorAvatarUrl,
-								"authorEmail"=>"gabill07@gmail.co.uk",
-								"authorHash"=>$this->authorHash,
-								"authorUsername"=>$this->authorUsername];
+							"authorEmail"=>$this->authorEmail,
+							"authorHash"=>$this->authorHash,
+							"authorUsername"=>$this->authorUsername];
 
 		$statement->execute($parameters);
 	}
