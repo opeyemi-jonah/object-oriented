@@ -6,30 +6,31 @@ $secrets =  new Secrets("/etc/apache2/capstone-mysql/cohort28/ojonah.ini");
 
 require_once (dirname(__DIR__,1)."/classes/Author.php");
 //use Author;
+$password = "$\skull_skunk_%year";
+$authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
+	//$authorHash = "hash1235676ghg91gothamhash";
 
-	$authorHash = "hash1235676ghg91gothamhash";
+		$authorId = "3134e90a-e3a5-4df2-abff-7cc7d8324530";
 
-		$authorId = "f2bcd9cc-3a9c-4584-be68-36085c367803";
+		$authorActivationToken = 'o9AbabiSlayerjkGE9xo9ZFoTGE9x750';
 
-		$authorActivationToken = 'o7AbabijebuasjkGE9xo7AFoTGE9x216';
+		$authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/squad4.png";
 
-		$authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/54.png";
-
-		$authorUsername = "User2007";
+		$authorUsername = "Andre3000";
 		
-		$authorEmail = "DeepC@cnm.edu";
+		$authorEmail = "Aundre@cnm.edu";
 
 		$author = new OpeyemiJonah\ObjectOriented\Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
-//$author->update($pdo);
-//$authors = Author::getAllObjects($pdo);
-//$authors =  $author->getAllObjects($pdo);
+$author->insert($pdo);
+//$authors = Author::getAllAuthor($pdo);
+//$authors =  $author->getAllAuthor($pdo);
 //var_dump($authors);
 		//$author->delete($pdo);
-		//Author::getAllObjects($pdo);
-		//$author->getSingleObject($pdo, $authorId);
-	//$authors->getAllObjects($pdo);
-var_dump($author->getSingleObject($pdo, $authorId));
+		//Author::getAllAuthor($pdo);
+		//$author->getAuthor $authorId);
+	//$authors->getAllAuthor($pdo);
+//var_dump($author->getAuthor($pdo, $authorId));
 
 
 

@@ -161,12 +161,23 @@ class Author implements \JsonSerializable  {
 	public function setAuthorHash($newAuthorHash): void {
 		//enforce that the hash is properly formatted
 		$newAuthorHash = trim($newAuthorHash);
-		if(empty($newAuthorHash)===true){
+		if(empty($newAuthorHash) === true) {
 			throw (new \InvalidArgumentException("Not a valid hash"));
 		}
+
+
+		//enforce the hash is really an Argon hash
+		$authorHashInfo = password_get_info($newAuthorHash);
+		if($authorHashInfo["algoName"] !== "argon2i") {
+			throw(new \InvalidArgumentException("profile hash is not a valid hash"));
+		}
+
+		//enforce that the hash is exactly 97 characters.
 		if(strlen($newAuthorHash)>97){
 			throw (new \RangeException("Must be 97 character"));
 		}
+
+		//store the hash
 		$this->authorHash = $newAuthorHash;
 	}
 
@@ -265,18 +276,19 @@ class Author implements \JsonSerializable  {
 
 
 
-	public function getAllObjects(\PDO $pdo) {
+	public function getAllAuthor(\PDO $pdo) {
 		// create query template
 		$query= "SELECT * FROM author";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 
-		// build an array of tweets
+		// build an array of author
 		$authors = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
 				$author = new Author($row["authorId"],$row["authorActivationToken"],$row["authorAvatarUrl"],$row["authorEmail"],$row["authorHash"],$row["authorUsername"]);
+				//To know the length of an array when you have no clue what's in it
 				$authors[$authors->key()] = $author;
 				$authors->next();
 			} catch(\Exception $exception) {
@@ -296,7 +308,7 @@ class Author implements \JsonSerializable  {
 
 
 	}
-	public function getSingleObject(\PDO $pdo, $authorId): ?Author {
+	public function getAuthor(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,
 		authorActivationToken,
