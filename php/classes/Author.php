@@ -87,7 +87,9 @@ class Author implements \JsonSerializable  {
 
 	}
 
-	/*Accessor for author avatar url */
+	/*
+	 * Accessor for author avatar url
+	 *  */
 
 	public function getAuthorAvatarUrl(): string {
 		return ($this->authorAvatarUrl);
@@ -95,7 +97,7 @@ class Author implements \JsonSerializable  {
 
 	// Mutator for author avatar url
 	public function setAuthorAvatarUrl(string $newAuthorAvatarUrl) : void {
-
+		// Making sure there are no whitespaces
 		$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
 		$newAuthorAvatarUrl = filter_var($newAuthorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
@@ -115,9 +117,11 @@ class Author implements \JsonSerializable  {
 
 	// Mutator for author activation token
 	public function setAuthorActivationToken(?string $newAuthorActivationToken): void {
+		//Verifying field is not empty
 		if($newAuthorActivationToken===null){
 			throw (new \InvalidArgumentException("Not token"));
 		}
+		//Making sure the input matches the database character length
 		if (strlen($newAuthorActivationToken)!==32){
 			throw (new \RangeException("Must be 32 characters"));
 		}
@@ -305,9 +309,9 @@ class Author implements \JsonSerializable  {
 		//returned Array of author
 		//return $row;
 
-
-
 	}
+
+
 	public function getAuthor(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,

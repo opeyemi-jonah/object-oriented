@@ -8,7 +8,6 @@ require_once (dirname(__DIR__,1)."/classes/Author.php");
 //use Author;
 $password = "$\skull_skunk_%year";
 $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
-	//$authorHash = "hash1235676ghg91gothamhash";
 
 		$authorId = "3134e90a-e3a5-4df2-abff-7cc7d8324530";
 
@@ -23,12 +22,14 @@ $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 		$author = new OpeyemiJonah\ObjectOriented\Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
 $author->insert($pdo);
+
+$author->getAuthor ($authorId);
 //$authors = Author::getAllAuthor($pdo);
 //$authors =  $author->getAllAuthor($pdo);
 //var_dump($authors);
 		//$author->delete($pdo);
 		//Author::getAllAuthor($pdo);
-		//$author->getAuthor $authorId);
+		//
 	//$authors->getAllAuthor($pdo);
 //var_dump($author->getAuthor($pdo, $authorId));
 
