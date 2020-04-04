@@ -1,11 +1,16 @@
 <?php
+
+use OpeyemiJonah\ObjectOriented\Author;
+
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
+require_once ("../classes/Author.php");
 $secrets =  new Secrets("/etc/apache2/capstone-mysql/cohort28/ojonah.ini");
  $pdo = $secrets->getPdoObject();
 //require_once("/etc/apache2/capstone-mysql/Secrets.php");
 
 require_once (dirname(__DIR__,1)."/classes/Author.php");
 //use Author;
+
 $password = "$\skull_skunk_%year";
 $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 
@@ -19,11 +24,13 @@ $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 		
 		$authorEmail = "Aundre@cnm.edu";
 
-		$author = new OpeyemiJonah\ObjectOriented\Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
+		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
-$author->insert($pdo);
-
-$author->getAuthor ($authorId);
+//$author->insert($pdo);
+echo "Here"."<br>";
+$getSingleObj=$author->getAuthor($pdo,$authorId);
+//$auth = $author->getAuthor($pdo,$authorId);
+//echo " $auth ";
 //$authors = Author::getAllAuthor($pdo);
 //$authors =  $author->getAllAuthor($pdo);
 //var_dump($authors);
@@ -32,7 +39,6 @@ $author->getAuthor ($authorId);
 		//
 	//$authors->getAllAuthor($pdo);
 //var_dump($author->getAuthor($pdo, $authorId));
-
 
 
 

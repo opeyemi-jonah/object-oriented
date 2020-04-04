@@ -2,7 +2,6 @@
 namespace OpeyemiJonah\ObjectOriented;
 
  require_once("autoload.php");
-require_once(dirname(__DIR__) . "/vendor/autoload.php");
 
 
 use http\Encoding\Stream;
@@ -82,6 +81,7 @@ class Author implements \JsonSerializable  {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
+		//store value into a uuid format
 		$this->authorId= $uuid;
 		echo "$uuid";
 
@@ -125,7 +125,7 @@ class Author implements \JsonSerializable  {
 		if (strlen($newAuthorActivationToken)!==32){
 			throw (new \RangeException("Must be 32 characters"));
 		}
-
+			//store object value based on new input from a user
 		$this->authorActivationToken = $newAuthorActivationToken;
 	}
 
@@ -223,7 +223,7 @@ class Author implements \JsonSerializable  {
 		$statement = $pdo->prepare($query);
 
 		//binding table attributes to placeholders
-		$parameters = ["authorId"=> $this->getAuthorId()->getBytes(),"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
+		$parameters = ["authorId" => $this->getAuthorId()->getBytes(),"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
 								"authorHash"=>$this->authorHash, "authorUsername"=>$this->authorUsername];
 		$statement->execute($parameters);
 	}
@@ -339,11 +339,42 @@ class Author implements \JsonSerializable  {
 			$row = $statement->fetch();
 			if($row !== false){
 				//instantiate author object and push data into it
-				$author = new Author($row["authorId"],$row["authorActivationToken"],$row["authorAvatarUrl"],$row["authorEmail"],$row["authorHash"],$row["authorUsername"]);
+				$author = new Author($row["authorId"],
+					$row["authorActivationToken"],
+					$row["authorAvatarUrl"],
+					$row["authorEmail"],
+					$row["authorHash"],
+					$row["authorUsername"]);
 			}
-			//var_dump($author);
 			return ($author);
 
+
+	}
+
+	public function getAuthorByEmail(\PDO $pdo, $authorEmail): \SplFixedArray{
+
+//create query template
+		$query = "SELECT 
+		authorEmail
+		FROM author WHERE authorId = :authorId";
+		$statement = $pdo->prepare($query);
+
+		//bind the objects to their respective placeholders in the table
+		$parameters = ["authorEmail" => $authorEmail];
+		$statement->execute($parameters);
+
+		//grab author from database
+
+		$author = null;
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		$row = $statement->fetch();
+		if($row !== false){
+			//instantiate author object and push data into it
+			$author = new Author($row["authorId"],
+				$row["authorEmail"]
+				);
+		}
+		return ($author);
 
 	}
 
