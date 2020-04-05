@@ -350,13 +350,18 @@ class Author implements \JsonSerializable  {
 
 
 	}
-
-	public function getAuthorByEmail(\PDO $pdo, $authorEmail): \SplFixedArray{
+//get author by Email
+	public function getAuthorByEmail(\PDO $pdo, $authorEmail): Author {
 
 //create query template
-		$query = "SELECT 
-		authorEmail
-		FROM author WHERE authorId = :authorId";
+		$query = "SELECT authorId,
+		authorActivationToken,
+		authorAvatarUrl,
+		authorEmail,
+		authorHash,
+		authorUsername 
+		FROM author 
+		 WHERE authorEmail = :authorEmail";
 		$statement = $pdo->prepare($query);
 
 		//bind the objects to their respective placeholders in the table
@@ -371,8 +376,11 @@ class Author implements \JsonSerializable  {
 		if($row !== false){
 			//instantiate author object and push data into it
 			$author = new Author($row["authorId"],
-				$row["authorEmail"]
-				);
+				$row["authorActivationToken"],
+				$row["authorAvatarUrl"],
+				$row["authorEmail"],
+				$row["authorHash"],
+				$row["authorUsername"]);
 		}
 		return ($author);
 

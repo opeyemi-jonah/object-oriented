@@ -27,18 +27,27 @@ $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
 //$author->insert($pdo);
-echo "Here"."<br>";
+echo " Here"."<br>";
 $getSingleObj=$author->getAuthor($pdo,$authorId);
+
+//print_r($getSingleObj);
+
+
+$email = $author->getAuthorByEmail($pdo,$authorEmail);
+
+echo " this is the result: ".'<br>';
+
+var_dump($email);
+print_r($email);
+
 //$auth = $author->getAuthor($pdo,$authorId);
-//echo " $auth ";
+
 //$authors = Author::getAllAuthor($pdo);
 //$authors =  $author->getAllAuthor($pdo);
-//var_dump($authors);
+
 		//$author->delete($pdo);
 		//Author::getAllAuthor($pdo);
-		//
 	//$authors->getAllAuthor($pdo);
-//var_dump($author->getAuthor($pdo, $authorId));
 
 
 
