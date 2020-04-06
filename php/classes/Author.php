@@ -15,32 +15,46 @@ This is a class made for registering books in a library or book stored
 class Author implements \JsonSerializable  {
 	use ValidateUuid;
 
-	/*
-	*/
 
+
+	/**
+	 * id for this Tweet; this is the primary key
+	 * @var Uuid $authorId
+	 **/
 	private $authorId;
 
 	/*
-	*/
+	 * Avatar Url for Author
+	 * @var string $authorAvatarUrl
+	 **/
+
 
 	private $authorAvatarUrl;
 
 	/*
+	 * Activation Token
+	 * @var string $authorActivationToken
 	*/
 
 	private $authorActivationToken;
 
 	/*
+	 * Author Email
+	 * @var string $authorEmail
 	*/
 
 	private $authorEmail;
 
 	/*
+	 * password hash
+	 * @var string $authorHash
 	*/
 
 	private $authorHash;
 
 	/*
+	 * Author username
+	 * @var string $authorUsername
 	*/
 
 	private $authorUsername;
@@ -256,7 +270,7 @@ class Author implements \JsonSerializable  {
 	public function update(\PDO $pdo) : void {
 
 		// create query template
-		$query = "UPDATE author SET authorId  = :authorId,
+		$query = "UPDATE author SET
  	authorActivationToken =:authorActivationToken,
  	authorAvatarUrl  = :authorAvatarUrl, 
  	authorEmail = :authorEmail,
@@ -311,7 +325,9 @@ class Author implements \JsonSerializable  {
 
 	}
 
-
+/*
+ * Method t
+ */
 	public function getAuthor(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,
@@ -351,6 +367,14 @@ class Author implements \JsonSerializable  {
 
 	}
 //get author by Email
+
+	/**
+	 * gets author by Email from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param $authorEmail
+	 * @return Author
+	 */
 	public function getAuthorByEmail(\PDO $pdo, $authorEmail): Author {
 
 //create query template
