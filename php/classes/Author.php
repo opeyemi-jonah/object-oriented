@@ -4,7 +4,7 @@ namespace OpeyemiJonah\ObjectOriented;
  require_once("autoload.php");
 
 
-use Cassandra\Uuid;
+use Ramsey\Uuid\Uuid;
 use http\Encoding\Stream;
 
 /*
