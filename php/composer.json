@@ -2,6 +2,7 @@
   "require": {
     "ramsey/uuid": "@stable",
     "ext-json": "*",
-    "ext-http": "*"
+    "ext-http": "*",
+    "ext-pdo": "*"
   }
 }
