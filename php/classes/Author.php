@@ -190,7 +190,7 @@ class Author implements \JsonSerializable  {
 	/**
 	 * @param string $newAuthorEmail new value of author id
 	 * @throws \RangeException  if $newAuthorEmail range
-	 * @throws \InvalidArgumentException if $newAuthorEmail data type is Invalid
+	 * @throws \InvalidArgumentException if $newAuthorEmail data type is Invalid or insecure
 	 * @throws \TypeError if $newAuthorEmail is not a string
 	 */
 
