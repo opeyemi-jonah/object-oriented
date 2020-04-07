@@ -4,8 +4,9 @@ namespace OpeyemiJonah\ObjectOriented;
  require_once("autoload.php");
 
 
+use Cassandra\Uuid;
 use http\Encoding\Stream;
-use Ramsey\Uuid\Uuid;
+
 /*
 This is a class made for registering books in a library or book stored
 @author Opeyemi Jonah <gavrieljonah@gmail.com>
@@ -59,9 +60,16 @@ class Author implements \JsonSerializable  {
 
 	private $authorUsername;
 
-	/*
-	 * Making constructors
+	/**
+	 * constructor for this Tweet
 	 *
+	 * @param string|Uuid $newAuthorId id of the author
+	 * @param string $newAuthorActivationToken string containing Activation token
+	 * @param string $newAuthorAvatarUrl string containing avatar url
+	 * @param string $newAuthorEmail string containing email
+	 * @param string $newAuthorHash string containing hash for password
+	 * @param string $newAuthorUsername string containing username
+	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 */
 	public function __construct($newAuthorId, ?string $newAuthorActivationToken,string $newAuthorAvatarUrl,string $newAuthorEmail, string $newAuthorHash, string $newAuthorUsername) {
 		try {
@@ -97,8 +105,6 @@ class Author implements \JsonSerializable  {
 		}
 		//store value into a uuid format
 		$this->authorId= $uuid;
-		echo "$uuid";
-
 	}
 
 	/*
@@ -206,7 +212,8 @@ class Author implements \JsonSerializable  {
 	}
 
 
-	// Mutator for Author Username
+	/*Mutator for Author Username
+	*/
 	public function setAuthorUsername(string $newAuthorUsername): void {
 		$newAuthorUsername = trim($newAuthorUsername);
 		$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
