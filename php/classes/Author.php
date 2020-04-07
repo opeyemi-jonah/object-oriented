@@ -7,6 +7,7 @@ namespace OpeyemiJonah\ObjectOriented;
 use http\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use http\Encoding\Stream;
+use TypeError;
 
 /*
 This is a class made for registering books in a library or book stored
@@ -80,7 +81,7 @@ class Author implements \JsonSerializable  {
 			$this->setAuthorAvatarUrl($newAuthorAvatarUrl);
 			$this->setAuthorEmail($newAuthorEmail);
 			$this->setAuthorHash($newAuthorHash);
-		} catch(\InvalidArgumentException | \RangeException |\TypeError | \Exception $exception) {
+		} catch(\InvalidArgumentException | \RangeException |TypeError | \Exception $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -103,7 +104,7 @@ class Author implements \JsonSerializable  {
 	 * @param Uuid|string $newAuthorId new value of author id
 	 * @throws \RangeException  if $newAuthorId range is out of bound
 	 * @throws \InvalidArgumentException if $newAuthorId data type is Invalid
-	 * @throws \TypeError if $newAuthorId is not a uuid or string
+	 * @throws TypeError if $newAuthorId is not a uuid or string
 	 */
 	public function setAuthorId($newAuthorId): void {
 
@@ -111,7 +112,7 @@ class Author implements \JsonSerializable  {
 		try {
 			$uuid = self::validateUuid($newAuthorId);
 
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -133,8 +134,9 @@ class Author implements \JsonSerializable  {
 	 * @param string $newAuthorAvatarUrl new value of author avatar url
 	 * @throws \RangeException  if $newAuthorAvatarUrl range is out of bound
 	 * @throws \InvalidArgumentException if $newAuthorAvatarUrl data type is Invalid
-	 * @throws \TypeError if $newAuthorAvatar is not a string
+	 * @throws TypeError if $newAuthorAvatar is not a string
 	 */
+
 	public function setAuthorAvatarUrl(?string $newAuthorAvatarUrl) : void {
 		// Making sure there are no whitespaces
 		$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
@@ -154,10 +156,17 @@ class Author implements \JsonSerializable  {
 		return ($this->authorActivationToken);
 	}
 
-	// Mutator for author activation token
+	/**
+	 * @param string|null $newAuthorActivationToken
+	 * @param string $newAuthorActivationToken new value of author id
+	 * @throws \RangeException  if $newAuthorActivationToken range
+	 * @throws \InvalidArgumentException if $newAuthorActivationToken data type is Invalid
+	 * @throws TypeError if $newAuthorActivationToken is not a string
+	 */
+
 	public function setAuthorActivationToken(?string $newAuthorActivationToken): void {
 		//Verifying field is not empty
-		if($newAuthorActivationToken===null){
+		if(ctype_xdigit($newAuthorActivationToken)===false){
 			throw (new \InvalidArgumentException("Not token"));
 		}
 		//Making sure the input matches the database character length
@@ -168,13 +177,23 @@ class Author implements \JsonSerializable  {
 		$this->authorActivationToken = $newAuthorActivationToken;
 	}
 
-	/*Accessor for Author Email*/
+	/*Accessor for Author Email
+	*
+	 * @return string value for author email
+	 */
+
 
 	public function getAuthorEmail(): string {
 		return $this->authorEmail;
 	}
 
-	// Mutator for Author email
+	/**
+	 * @param string $newAuthorEmail new value of author id
+	 * @throws \RangeException  if $newAuthorEmail range
+	 * @throws \InvalidArgumentException if $newAuthorEmail data type is Invalid
+	 * @throws \TypeError if $newAuthorEmail is not a string
+	 */
+
 	public function setAuthorEmail(string $newAuthorEmail): void {
 
 		// verify the email is secure
@@ -194,7 +213,10 @@ class Author implements \JsonSerializable  {
 		$this->authorEmail = $newAuthorEmail;
 	}
 
-/*Accessor for Author hash from password conversion */
+/*Accessor for Author hash from password conversion
+*
+ * @returns string value for Author hash
+ * */
 
 	public function getAuthorHash(): string {
 		return ($this->authorHash);
@@ -224,7 +246,10 @@ class Author implements \JsonSerializable  {
 		$this->authorHash = $newAuthorHash;
 	}
 
-	/*Accessor for authorUsername */
+	/*Accessor for authorUsername
+	*
+	*@returns string value for Author username
+	*/
 
 	public function getAuthorUsername(): string {
 		return ($this->authorUsername);
@@ -250,7 +275,7 @@ class Author implements \JsonSerializable  {
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError if $pdo is not a PDO connection object
+	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
 
 
@@ -274,7 +299,7 @@ class Author implements \JsonSerializable  {
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError if $pdo is not a PDO connection object
+	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
 	public function delete(\PDO $pdo) : void {
 
@@ -291,7 +316,7 @@ class Author implements \JsonSerializable  {
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError if $pdo is not a PDO connection object
+	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
 	public function update(\PDO $pdo) : void {
 
@@ -366,7 +391,7 @@ class Author implements \JsonSerializable  {
 		$statement = $pdo->prepare($query);
 		try {
 			$authorId = self::validateUuid($authorId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 
