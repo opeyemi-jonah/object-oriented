@@ -222,7 +222,13 @@ class Author implements \JsonSerializable  {
 		return ($this->authorHash);
 	}
 
-	// Mutator for Author hash
+	/**
+	 * @param $newAuthorHash
+	 * @throws \RangeException  if $newAuthorHash range
+	 * @throws \InvalidArgumentException if $newAuthorHash data type is Invalid
+	 * @throws \TypeError if $newAuthorHash is not a string
+	 */
+
 	public function setAuthorHash($newAuthorHash): void {
 		//enforce that the hash is properly formatted
 		$newAuthorHash = trim($newAuthorHash);
@@ -257,7 +263,12 @@ class Author implements \JsonSerializable  {
 
 
 	/*Mutator for Author Username
-	*/
+	 * @param $newAuthorUsername
+	 * @throws \RangeException  if $newAuthorUsername range
+	 * @throws \InvalidArgumentException if $newAuthorHash data type is Invalid
+	 * @throws \TypeError if $newAuthorUsername is not a string
+	 */
+
 	public function setAuthorUsername(string $newAuthorUsername): void {
 		$newAuthorUsername = trim($newAuthorUsername);
 		$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -270,6 +281,8 @@ class Author implements \JsonSerializable  {
 		//store the username
 		$this->authorUsername = $newAuthorUsername;
 	}
+
+
 	/**
 	 * inserts into mySQL
 	 *
@@ -277,7 +290,6 @@ class Author implements \JsonSerializable  {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
-
 
 	public function insert(\PDO $pdo) : void  {
 
@@ -343,7 +355,14 @@ class Author implements \JsonSerializable  {
 		$statement->execute($parameters);
 	}
 
-
+	/**
+	 * pulls all Author data from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws TypeError if $pdo is not a PDO connection object
+	 **/
 
 	public function getAllAuthor(\PDO $pdo) {
 		// create query template
@@ -376,9 +395,13 @@ class Author implements \JsonSerializable  {
 
 	}
 
-/*
- * Method t
- */
+	/**
+	 * gets a single data from the Author table in mySQL
+	 * @param \PDO $pdo PDO connection object
+	 * @return Author|null
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws TypeError if $pdo is not a PDO connection object
+	 **/
 	public function getAuthor(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,
@@ -462,7 +485,10 @@ class Author implements \JsonSerializable  {
 	}
 
 
-
+	/**
+	 * converts uuid to human readable format
+	 * @return array of strings
+	 **/
 
 	public function jsonSerialize() : array {
 		$fields = get_object_vars($this);
