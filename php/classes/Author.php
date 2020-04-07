@@ -4,6 +4,7 @@ namespace OpeyemiJonah\ObjectOriented;
  require_once("autoload.php");
 
 
+use http\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use http\Encoding\Stream;
 
@@ -71,7 +72,7 @@ class Author implements \JsonSerializable  {
 	 * @param string $newAuthorUsername string containing username
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 */
-	public function __construct($newAuthorId, ?string $newAuthorActivationToken,string $newAuthorAvatarUrl,string $newAuthorEmail, string $newAuthorHash, string $newAuthorUsername) {
+	public function __construct($newAuthorId, ?string $newAuthorActivationToken,?string $newAuthorAvatarUrl,string $newAuthorEmail, string $newAuthorHash, string $newAuthorUsername) {
 		try {
 			$this->setAuthorId($newAuthorId);
 			$this->setAuthorActivationToken($newAuthorActivationToken);
@@ -86,13 +87,24 @@ class Author implements \JsonSerializable  {
 		}
 	}
 
-	/*Accessor for Author Id */
+	/**
+	 * Accessor for author id
+	 *
+	 * @return uuid
+	 */
 
 	public function getAuthorId(): Uuid {
 		return ($this->authorId);
 	}
 
-// Mutator for Author Id
+
+	/**
+	 *Mutator for author id
+	 * @param Uuid|string $newAuthorId new value of author id
+	 * @throws \RangeException  if $newAuthorId range is out of bound
+	 * @throws \InvalidArgumentException if $newAuthorId data type is Invalid
+	 * @throws \TypeError if $newAuthorId is not a uuid or string
+	 */
 	public function setAuthorId($newAuthorId): void {
 
 		//verify the author id is valid
@@ -109,14 +121,21 @@ class Author implements \JsonSerializable  {
 
 	/*
 	 * Accessor for author avatar url
+	 * @returns a string value for the Author avatar url
 	 *  */
 
-	public function getAuthorAvatarUrl(): string {
+	public function getAuthorAvatarUrl(): ?string {
 		return ($this->authorAvatarUrl);
 	}
 
-	// Mutator for author avatar url
-	public function setAuthorAvatarUrl(string $newAuthorAvatarUrl) : void {
+	/**
+	 *Mutator for author Avatar url
+	 * @param string $newAuthorAvatarUrl new value of author avatar url
+	 * @throws \RangeException  if $newAuthorAvatarUrl range is out of bound
+	 * @throws \InvalidArgumentException if $newAuthorAvatarUrl data type is Invalid
+	 * @throws \TypeError if $newAuthorAvatar is not a string
+	 */
+	public function setAuthorAvatarUrl(?string $newAuthorAvatarUrl) : void {
 		// Making sure there are no whitespaces
 		$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
 		$newAuthorAvatarUrl = filter_var($newAuthorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);

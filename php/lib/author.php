@@ -37,8 +37,8 @@ $email = $author->getAuthorByEmail($pdo,$authorEmail);
 
 echo " this is the result: ".'<br>';
 
-var_dump($email);
-print_r($email);
+//var_dump($email);
+//print_r($email);
 
 //$auth = $author->getAuthor($pdo,$authorId);
 
