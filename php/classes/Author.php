@@ -102,7 +102,7 @@ class Author implements \JsonSerializable  {
 	/**
 	 *Mutator for author id
 	 * @param Uuid|string $newAuthorId new value of author id
-	 * @throws \RangeException  if $newAuthorId range is out of bound
+	 * @throws \RangeException  if $newAuthorId range is more than 16
 	 * @throws \InvalidArgumentException if $newAuthorId data type is Invalid
 	 * @throws TypeError if $newAuthorId is not a uuid or string
 	 */
@@ -132,20 +132,26 @@ class Author implements \JsonSerializable  {
 	/**
 	 *Mutator for author Avatar url
 	 * @param string $newAuthorAvatarUrl new value of author avatar url
-	 * @throws \RangeException  if $newAuthorAvatarUrl range is out of bound
+	 * @throws \RangeException  if $newAuthorAvatarUrl range is over 255
 	 * @throws \InvalidArgumentException if $newAuthorAvatarUrl data type is Invalid
 	 * @throws TypeError if $newAuthorAvatar is not a string
 	 */
 
 	public function setAuthorAvatarUrl(?string $newAuthorAvatarUrl) : void {
-		// Making sure there are no whitespaces
-		$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
-		$newAuthorAvatarUrl = filter_var($newAuthorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		try {
+			// Making sure there are no whitespaces
+			$newAuthorAvatarUrl = trim($newAuthorAvatarUrl);
+			$newAuthorAvatarUrl = filter_var($newAuthorAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
-		// verify the avatar URL will fit in the database
-		if(strlen($newAuthorAvatarUrl) > 255) {
-			throw(new \RangeException("image content too large"));
+			// verify the avatar URL will fit in the database
+			if(strlen($newAuthorAvatarUrl) > 255) {
+				throw(new \RangeException("image content too large"));
+			}
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
+
 		// store the image cloudinary content
 		$this->authorAvatarUrl = $newAuthorAvatarUrl;
 	}
@@ -159,20 +165,30 @@ class Author implements \JsonSerializable  {
 	/**
 	 * @param string|null $newAuthorActivationToken
 	 * @param string $newAuthorActivationToken new value of author id
-	 * @throws \RangeException  if $newAuthorActivationToken range
+	 * @throws \RangeException  if $newAuthorActivationToken range is not equal to 32
 	 * @throws \InvalidArgumentException if $newAuthorActivationToken data type is Invalid
 	 * @throws TypeError if $newAuthorActivationToken is not a string
 	 */
 
 	public function setAuthorActivationToken(?string $newAuthorActivationToken): void {
-		//Verifying field is not empty
-		if(ctype_xdigit($newAuthorActivationToken)===false){
-			throw (new \InvalidArgumentException("Not token"));
-		}
-		//Making sure the input matches the database character length
-		if (strlen($newAuthorActivationToken)!==32){
-			throw (new \RangeException("Must be 32 characters"));
-		}
+try{
+
+	if($newAuthorActivationToken === null) {
+		$this->authorActivationToken = null;
+		return;
+	}
+	//Verifying field is not empty
+	if(ctype_xdigit($newAuthorActivationToken)===false){
+		throw (new \InvalidArgumentException("Not token"));
+	}
+	//Making sure the input matches the database character length
+	if (strlen($newAuthorActivationToken)!==32){
+		throw (new \RangeException("Must be 32 characters"));
+	}
+} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+	$exceptionType = get_class($exception);
+	throw(new $exceptionType($exception->getMessage(), 0, $exception));
+}
 			//store object value based on new input from a user
 		$this->authorActivationToken = $newAuthorActivationToken;
 	}
@@ -195,19 +211,24 @@ class Author implements \JsonSerializable  {
 	 */
 
 	public function setAuthorEmail(string $newAuthorEmail): void {
-
-		// verify the email is secure
-		$newAuthorEmail = trim($newAuthorEmail);
-		$newAuthorEmail = filter_var($newAuthorEmail, FILTER_VALIDATE_EMAIL,FILTER_FLAG_EMAIL_UNICODE);
+try{
+	// verify the email is secure
+	$newAuthorEmail = trim($newAuthorEmail);
+	$newAuthorEmail = filter_var($newAuthorEmail, FILTER_VALIDATE_EMAIL,FILTER_FLAG_EMAIL_UNICODE);
 // I
-		if(empty($newAuthorEmail) === true) {
-			throw (new \InvalidArgumentException("Author email is empty or insecure"));
-		}
+	if(empty($newAuthorEmail) === true) {
+		throw (new \InvalidArgumentException("Author email is empty or insecure"));
+	}
 
-		// verify the email will fit in the database
-		if(strlen($newAuthorEmail) > 128) {
-			throw (new \RangeException("Author email is too large"));
-		}
+	// verify the email will fit in the database
+	if(strlen($newAuthorEmail) > 128) {
+		throw (new \RangeException("Author email is too large"));
+	}
+} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+	$exceptionType = get_class($exception);
+	throw(new $exceptionType($exception->getMessage(), 0, $exception));
+}
+
 
 		// store the email
 		$this->authorEmail = $newAuthorEmail;
@@ -224,28 +245,35 @@ class Author implements \JsonSerializable  {
 
 	/**
 	 * @param $newAuthorHash
-	 * @throws \RangeException  if $newAuthorHash range
+	 * @throws \RangeException  if $newAuthorHash range is greater that 97
 	 * @throws \InvalidArgumentException if $newAuthorHash data type is Invalid
 	 * @throws \TypeError if $newAuthorHash is not a string
 	 */
 
 	public function setAuthorHash($newAuthorHash): void {
-		//enforce that the hash is properly formatted
-		$newAuthorHash = trim($newAuthorHash);
-		if(empty($newAuthorHash) === true) {
-			throw (new \InvalidArgumentException("Not a valid hash"));
-		}
+
+		try{
+			//enforce that the hash is properly formatted
+			$newAuthorHash = trim($newAuthorHash);
+			if(empty($newAuthorHash) === true) {
+				throw (new \InvalidArgumentException("Not a valid hash"));
+			}
 
 
-		//enforce the hash is really an Argon hash
-		$authorHashInfo = password_get_info($newAuthorHash);
-		if($authorHashInfo["algoName"] !== "argon2i") {
-			throw(new \InvalidArgumentException("profile hash is not a valid hash"));
-		}
+			//enforce the hash is really an Argon hash
+			$authorHashInfo = password_get_info($newAuthorHash);
+			if($authorHashInfo["algoName"] !== "argon2i") {
+				throw(new \InvalidArgumentException("profile hash is not a valid hash"));
+			}
 
-		//enforce that the hash is exactly 97 characters.
-		if(strlen($newAuthorHash)>97){
-			throw (new \RangeException("Must be 97 character"));
+			//enforce that the hash is exactly 97 characters.
+			if(strlen($newAuthorHash)>97){
+				throw (new \RangeException("Must be 97 character"));
+			}
+
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
 
 		//store the hash
@@ -270,13 +298,20 @@ class Author implements \JsonSerializable  {
 	 */
 
 	public function setAuthorUsername(string $newAuthorUsername): void {
-		$newAuthorUsername = trim($newAuthorUsername);
-		$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		if(strlen($newAuthorUsername) > 32) {
-			throw (new \RangeException("Username is too long"));
+
+		try{
+			$newAuthorUsername = trim($newAuthorUsername);
+			$newAuthorUsername = filter_var($newAuthorUsername, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+			if(strlen($newAuthorUsername) > 32) {
+				throw (new \RangeException("Username is too long"));
+			}
+			if(empty($newAuthorUsername) === true) {
+				throw (new \InvalidArgumentException("Not a secure username or it is empty"));
+			}
 		}
-		if(empty($newAuthorUsername) === true) {
-			throw (new \InvalidArgumentException("Not a secure username or it is empty"));
+		catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
 		//store the username
 		$this->authorUsername = $newAuthorUsername;
@@ -495,8 +530,11 @@ class Author implements \JsonSerializable  {
 
 		$fields["authorId"] = $this->authorId->toString();
 		return($fields);
+		unset($fields[$authorActivationToken]);
+		unset($fields[$authorHash]);
+		return ($fields);
 	}
 
 }
-?>
+
 
