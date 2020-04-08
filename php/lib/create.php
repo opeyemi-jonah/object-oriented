@@ -22,24 +22,28 @@ require_once (dirname(__DIR__,1)."/classes/Author.php");
 $authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/squad4.png";
 
 //               $password = "$_POST['$authorHash']";
+//$authorUsername = $_POST['authorUsername'];
+//$authorEmail = $_POST['authorEmail'];
+
+$authorActivationToken = bin2hex(random_bytes(16));
+
 
 
 if(isset($_POST['submit'])) {
-
-	try{$authorUsername = $_POST['authorUsername'];
-		$authorEmail = $_POST['authorEmail'];
-
-		$authorActivationToken = bin2hex(random_bytes(16));
-
+	try{
 		$authorHash = password_hash($_POST['$authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
+		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'], $authorHash, $_POST['authorUsername']);
+		//$author->insert($pdo);
 
-		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
-		$author->insert($pdo);
 	}
-	catch(Exception $exception){
-		$exception->getMessage();
+	catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+		$exceptionType = get_class($exception);
+		throw(new $exceptionType($exception->getMessage(), 0, $exception));
 	}
-
+	echo "this is your username ".$author->getAuthorUsername()."<br>";
+	echo "this is your email ".$author->getAuthorEmail()."<br>";
+	echo "this is your password ".$author->getAuthorHash()."<br>";
+	$author->insert($pdo);
 
 }
 
@@ -49,20 +53,18 @@ if(isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html lang="en">
 
-<form method="post" action="../classes/Author.php">
+<form method="post">
 	<label for="authorEmail">Insert email: </label>
 	<input type="email" name="authorEmail" id="authorEmail"><br>
 
 	<label for="authorHash">Insert password: </label>
-	<input type="email" name="authorHash" id="authorHash"><br>
+	<input type="text" name="authorHash" id="authorHash"><br>
 
 	<label for="authorUsername">Insert username: </label>
-	<input type="email" name="authorUsername" id="authorUsername"><br>
+	<input type="text" name="authorUsername" id="authorUsername"><br>
 	<input type="submit" value="Submit">
 
-
-
-
 </form>
+
 
 </html>

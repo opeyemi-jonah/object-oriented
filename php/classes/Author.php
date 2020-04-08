@@ -335,7 +335,7 @@ try{
 		$statement = $pdo->prepare($query);
 
 		//binding table attributes to placeholders
-		$parameters = ["authorId" => $this->getAuthorId()->getBytes(),"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
+		$parameters = ["authorId" => $this->authorId->getBytes(),"authorActivationToken"=>$this->authorActivationToken,"authorAvatarUrl"=>$this->authorAvatarUrl,"authorEmail"=>$this->authorEmail,
 								"authorHash"=>$this->authorHash, "authorUsername"=>$this->authorUsername];
 		$statement->execute($parameters);
 	}
@@ -354,7 +354,7 @@ try{
 		$query = "DELETE FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
 
-		$parameters = ["authorId" =>$this->getAuthorId()->getBytes()];
+		$parameters = ["authorId" =>$this->authorId->getBytes()];
 		$statement ->execute($parameters);
 	}
 
@@ -380,7 +380,7 @@ try{
 
 
 //binds class objects to sql placeholders
-		$parameters = ["authorId"=> $this->getAuthorId()->getBytes(),
+		$parameters = ["authorId"=> $this->authorId->getBytes(),
 							"authorActivationToken"=>$this->authorActivationToken,
 							"authorAvatarUrl"=>$this->authorAvatarUrl,
 							"authorEmail"=>$this->authorEmail,
