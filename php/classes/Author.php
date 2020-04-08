@@ -432,8 +432,9 @@ try{
 
 	/**
 	 * gets a single data from the Author table in mySQL
+	 * @param uuid|string $authorId author id to search for
 	 * @param \PDO $pdo PDO connection object
-	 * @return Author|null
+	 * @return Author|null Author found or null of not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/

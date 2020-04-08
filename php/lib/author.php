@@ -16,7 +16,7 @@ $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 
 		$authorId = "3134e90a-e3a5-4df2-abff-7cc7d8324530";
 
-		$authorActivationToken = 'o9AbabiSlayerjkGE9xo9ZFoTGE9x750';
+		$authorActivationToken;
 
 		$authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/squad4.png";
 
@@ -38,7 +38,7 @@ $email = $author->getAuthorByEmail($pdo,$authorEmail);
 echo " this is the result: ".'<br>';
 
 //var_dump($email);
-//print_r($email);
+print_r($email);
 
 //$auth = $author->getAuthor($pdo,$authorId);
 
