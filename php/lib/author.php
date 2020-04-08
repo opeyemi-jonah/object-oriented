@@ -27,7 +27,7 @@ $authorActivationToken = bin2hex(random_bytes(16));
 
 		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
-$author->insert($pdo);
+$author->getAuthorByUsername($pdo,"A");
 echo " Here"."<br>";
 echo "hash: ".$author->getAuthorHash();
 

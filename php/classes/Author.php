@@ -407,10 +407,14 @@ try{
 					authorUsername FROM author 
 					WHERE authorUsername LIKE :authorUsername";
 		$statement = $pdo->prepare($query);
-		$statement->execute();
+
+
+		//bind the author username to the placeholder in the template
+		$authorUsername = "%$authorUsername%"; //searches for any character similar either from the left or right
+		$parameters = ["authorUsername"=>$authorUsername];
+		$statement->execute($parameters);
 
 		// build an array of author
-		$authorUsername = "%$authorUsername%"; //searches for any character similar either from the left or right
 		$authors = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
