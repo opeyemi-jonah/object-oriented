@@ -7,22 +7,23 @@ $secrets =  new Secrets("/etc/apache2/capstone-mysql/cohort28/ojonah.ini");
 
 require_once (dirname(__DIR__,1)."/classes/Author.php");
 
-$password = "$\skull_skunk_%year";
+$password = "funny";
 $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 
-		$authorId = "3f49fd80-2e13-40f5-bb34-ba5c7359e7b2";
+		$authorId = "f8817c2f-a6c5-433b-99e6-78b53ed8d4e8";
 
 $authorActivationToken = bin2hex(random_bytes(16));
 
-		$authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/newHomie90.png";
+		$authorAvatarUrl = "https://strapss.discourse.org/v4/letter/m/a8b319/newHomie90.png";
 
-		$authorUsername = "Ameer";
+		$authorUsername = "zilo";
 		
-		$authorEmail = "Kilo@gnail.edu";
+		$authorEmail = "zilowo@gnail.edu";
 
 		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
-//$author->getAuthorByUsername($pdo,"A");
+print_r($author->getAuthorByUsername($pdo,"z"));
+//$author->insert($pdo);
 echo " Here"."<br>";
 echo "hash: ".$author->getAuthorHash();
 
