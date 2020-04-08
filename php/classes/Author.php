@@ -391,26 +391,35 @@ try{
 	}
 
 	/**
-	 * pulls all Author data from mySQL
-	 *
+	 * pulls User names fromAuthor data from mySQL
+	 * @param string $authorUsername
 	 * @param \PDO $pdo PDO connection object
-	 * @return \SplFixedArray
+	 * @return \SplFixedArray SplFixedArray of Authors found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
 
-	public function getAllAuthor(\PDO $pdo) {
+	public function getAuthorByUsername(\PDO $pdo, string $authorUsername) : \SplFixedArray {
 		// create query template
-		$query= "SELECT * FROM author";
+		$query= "SELECT authorId, 
+					authorActivationToken, 
+					authorAvatarUrl, authorEmail, authorHash, 
+					authorUsername FROM author 
+					WHERE authorUsername LIKE :authorUsername";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 
 		// build an array of author
+		$authorUsername = "%$authorUsername%"; //searches for any character similar either from the left or right
 		$authors = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$author = new Author($row["authorId"],$row["authorActivationToken"],$row["authorAvatarUrl"],$row["authorEmail"],$row["authorHash"],$row["authorUsername"]);
+				$author = new Author($row["authorId"],
+					$row["authorActivationToken"],
+					$row["authorAvatarUrl"],$row["authorEmail"],
+					$row["authorHash"],
+					$row["authorUsername"]);
 				//To know the length of an array when you have no clue what's in it
 				$authors[$authors->key()] = $author;
 				$authors->next();
@@ -438,7 +447,7 @@ try{
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
-	public function getAuthor(\PDO $pdo, $authorId): ?Author {
+	public function getAuthorByAuthorId(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,
 		authorActivationToken,

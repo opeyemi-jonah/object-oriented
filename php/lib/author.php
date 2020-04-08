@@ -14,9 +14,9 @@ require_once (dirname(__DIR__,1)."/classes/Author.php");
 $password = "$\skull_skunk_%year";
 $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 
-		$authorId = "3134e90a-e3a5-4df2-abff-7cc7d8324530";
+		//$authorId = "3134e90a-e3a5-4df2-abff-7cc7d8324530";
 
-		$authorActivationToken;
+		$authorActivationToken = 'o9AbabiSlayerjkGE9xo9ZFoTGE9x750';
 
 		$authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/squad4.png";
 
@@ -24,11 +24,11 @@ $authorHash = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 45]);
 		
 		$authorEmail = "Aundre@cnm.edu";
 
-		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
+		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
 //$author->insert($pdo);
 echo " Here"."<br>";
-$getSingleObj=$author->getAuthor($pdo,$authorId);
+echo "hash: ".$author->getAuthorHash();
 
 //print_r($getSingleObj);
 
@@ -37,7 +37,7 @@ $email = $author->getAuthorByEmail($pdo,$authorEmail);
 
 echo " this is the result: ".'<br>';
 
-//var_dump($email);
+var_dump($email);
 print_r($email);
 
 //$auth = $author->getAuthor($pdo,$authorId);

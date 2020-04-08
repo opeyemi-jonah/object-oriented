@@ -32,7 +32,7 @@ $authorActivationToken = bin2hex(random_bytes(16));
 if(isset($_POST['submit'])) {
 	try{
 		$authorHash = password_hash($_POST['$authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
-		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'], $authorHash, $_POST['authorUsername']);
+		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'],$authorHash,$authorUsername = $_POST['authorUsername']);
 		//$author->insert($pdo);
 
 	}
