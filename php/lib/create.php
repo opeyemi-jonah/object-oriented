@@ -27,7 +27,7 @@ $authorId = generateUuidV4()->getBytes();
 //var_dump($_POST);
 $authorHash = password_hash($_POST['authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
 
-//TODO I need to fixed this to insert into database
+
 if(isset($_POST['authorUsername'], $_POST['authorEmail'],$_POST['authorHash'])) {
 
 	try{
