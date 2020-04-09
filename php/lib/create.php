@@ -11,10 +11,6 @@ $pdo = $secrets->getPdoObject();
 
 require_once (dirname(__DIR__,1)."/classes/Author.php");
 //use Author;
-
-//$num1 = $_POST['number1'];
-//$num2 = $_POST['number2'];
-
 //$authorId = "3134e90a-e3a5-4df2-abff-7cc7d8324530";
 
 
@@ -30,11 +26,11 @@ $authorActivationToken = bin2hex(random_bytes(16));
 
 var_dump($_POST);
 
-if(isset($_POST['authorUsername'])) {
+if(isset($_POST['authorUsername'], $_POST['authorEmail'],$_POST['authorHash'])) {
 
 	try{
 		$authorHash = password_hash($_POST['authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
-		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'],$authorHash,$authorUsername = $_POST['authorUsername']);
+		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'],$_POST['authorHash'],$authorUsername = $_POST['authorUsername']);
 		//$author->insert($pdo);
 
 	}
