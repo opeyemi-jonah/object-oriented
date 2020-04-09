@@ -23,14 +23,16 @@ $authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/squad4.png";
 
 $authorActivationToken = bin2hex(random_bytes(16));
 
+$authorId = generateUuidV4()->getBytes();
+//var_dump($_POST);
+$authorHash = password_hash($_POST['authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
 
-var_dump($_POST);
-
+//TODO I need to fixed this to insert into database
 if(isset($_POST['authorUsername'], $_POST['authorEmail'],$_POST['authorHash'])) {
 
 	try{
-		$authorHash = password_hash($_POST['authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
-		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'],$_POST['authorHash'],$authorUsername = $_POST['authorUsername']);
+
+		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'],$authorHash,$authorUsername = $_POST['authorUsername']);
 		//$author->insert($pdo);
 
 	}
