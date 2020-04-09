@@ -3,7 +3,7 @@ use OpeyemiJonah\ObjectOriented\Author;
 require ("uuid.php");
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
 $secrets =  new Secrets("/etc/apache2/capstone-mysql/cohort28/ojonah.ini");
- $pdo = $secrets->getPdoObject();
+$pdo = $secrets->getPdoObject();
 
 require_once (dirname(__DIR__,1)."/classes/Author.php");
 
@@ -23,6 +23,7 @@ $authorActivationToken = bin2hex(random_bytes(16));
 		$author = new Author($authorId, $authorActivationToken, $authorAvatarUrl, $authorEmail, $authorHash, $authorUsername);
 
 print_r($author->getAuthorByUsername($pdo,"z"));
+print_r($author->getAuthorByUsername($pdo,"s")) ;
 //$author->insert($pdo);
 echo " Here"."<br>";
 echo "hash: ".$author->getAuthorHash();

@@ -28,10 +28,12 @@ $authorAvatarUrl = "https://avars.discourse.org/v4/letter/m/a8b319/squad4.png";
 $authorActivationToken = bin2hex(random_bytes(16));
 
 
+var_dump($_POST);
 
-if(isset($_POST['submit'])) {
+if(isset($_POST['authorUsername'])) {
+
 	try{
-		$authorHash = password_hash($_POST['$authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
+		$authorHash = password_hash($_POST['authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
 		$author = new Author(generateUuidV4(), $authorActivationToken, $authorAvatarUrl, $authorEmail = $_POST['authorEmail'],$authorHash,$authorUsername = $_POST['authorUsername']);
 		//$author->insert($pdo);
 
