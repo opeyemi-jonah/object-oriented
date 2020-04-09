@@ -27,7 +27,6 @@ $authorId = generateUuidV4()->getBytes();
 //var_dump($_POST);
 $authorHash = password_hash($_POST['authorHash'], PASSWORD_ARGON2I, ["time_cost" => 45]);
 
-
 if(isset($_POST['authorUsername'], $_POST['authorEmail'],$_POST['authorHash'])) {
 
 	try{
@@ -58,7 +57,7 @@ if(isset($_POST['authorUsername'], $_POST['authorEmail'],$_POST['authorHash'])) 
 	<input type="email" name="authorEmail" id="authorEmail"><br>
 
 	<label for="authorHash">Insert password: </label>
-	<input type="text" name="authorHash" id="authorHash"><br>
+	<input type="password" name="authorHash" id="authorHash"><br>
 
 	<label for="authorUsername">Insert username: </label>
 	<input type="text" name="authorUsername" id="authorUsername"><br>
