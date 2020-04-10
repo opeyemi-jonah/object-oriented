@@ -46,7 +46,13 @@ $author->insert($this->getPDO());
 
 		//get a copy of the record just inserted and validate the values
 		// make sure the values that went into the record are the same ones that come out
-		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId());
+		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId()->getBytes());
+		self::assertEquals($authorId,$pdoAuthor->getAuthorId());
+		self::assertEquals($this->VALID_ACTIVATION_TOKEN, $pdoAuthor->getAuthorActivationToken());
+		self::assertEquals($this->VALID_AVATAR_URL, $pdoAuthor->getAuthorAvatarUrl());
+		self::assertEquals($this->VALID_AUTHOR_EMAIL, $pdoAuthor->getAuthorEmail());
+		self::assertEquals($this->VALID_AUTHOR_HASH, $pdoAuthor->getAuthorHash());
+		self::assertEquals($this->VALID_USERNAME, $pdoAuthor->getAuthorUsername());
 
 	}
 
@@ -74,7 +80,7 @@ $author->insert($this->getPDO());
 		$numRows = $this->getConnection()->getRowCount("author");
 
 		//delete an author record in the db
-		$authorId = generateUuidV4()->toString();
+		$authorId = generateUuidV4()->getBytes();
 		$author = new Author($authorId,
 			$this->VALID_ACTIVATION_TOKEN,
 			$this->VALID_AVATAR_URL,
