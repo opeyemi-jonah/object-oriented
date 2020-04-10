@@ -46,6 +46,7 @@ $author->insert($this->getPDO());
 
 		//get a copy of the record just inserted and validate the values
 		// make sure the values that went into the record are the same ones that come out
+		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId());
 
 	}
 
@@ -53,7 +54,7 @@ $author->insert($this->getPDO());
 		//get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
 
-		//insert an author record in the db
+		//update an author record in the db
 		$authorId = generateUuidV4()->toString();
 		$author = new Author($authorId,
 			$this->VALID_ACTIVATION_TOKEN,
@@ -72,7 +73,7 @@ $author->insert($this->getPDO());
 		//get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
 
-		//insert an author record in the db
+		//delete an author record in the db
 		$authorId = generateUuidV4()->toString();
 		$author = new Author($authorId,
 			$this->VALID_ACTIVATION_TOKEN,
@@ -90,7 +91,7 @@ $author->insert($this->getPDO());
 	public function testGetValidAuthorByAuthorId(): void {
 //get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
-		//insert an author record in the db
+		//get an author record in the db by Id
 		$authorId = generateUuidV4()->toString();
 		$author = new Author($authorId,
 			$this->VALID_ACTIVATION_TOKEN,

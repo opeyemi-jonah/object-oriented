@@ -452,7 +452,7 @@ try{
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws TypeError if $pdo is not a PDO connection object
 	 **/
-	public function getAuthorByAuthorId(\PDO $pdo, $authorId): ?Author {
+	public static function getAuthorByAuthorId(\PDO $pdo, $authorId): ?Author {
 		//create query template
 		$query = "SELECT authorId,
 		authorActivationToken,
