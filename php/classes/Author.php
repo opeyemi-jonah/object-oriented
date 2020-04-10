@@ -354,6 +354,7 @@ try{
 		$query = "DELETE FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
 
+		//binding table attribute to placeholder
 		$parameters = ["authorId" =>$this->authorId->getBytes()];
 		$statement ->execute($parameters);
 	}
