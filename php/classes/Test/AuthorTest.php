@@ -96,11 +96,10 @@ $author->insert($this->getPDO());
 		//get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
 
-
-		$insertedRow = 2;
+		$insertedRow = 3;
 
 		//insert multiple rows for testing
-		for ($i=0; $i<=$insertedRow; $i++){
+		for ($i=0; $i < $insertedRow; $i++){
 			//insert  author record in the db
 			$authorId = generateUuidV4()->toString();
 			$author = new Author($authorId,
@@ -121,13 +120,10 @@ $author->insert($this->getPDO());
 		$author->delete($this->getPDO());
 
 		//try to get the last record we inserted. it should not exist.
-		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId()->toString());
-
+		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(),$author->getAuthorId()->toString());
 		//validate that only one record was deleted.
 		$numRowsAfterDelete = $this->getConnection()->getRowCount("author");
 		self::assertEquals($numRows + $insertedRow - 1, $numRowsAfterDelete);
-
-
 
 
 	}
