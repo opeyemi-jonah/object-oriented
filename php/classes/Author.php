@@ -462,6 +462,7 @@ try{
 		authorUsername 
 		FROM author WHERE authorId = :authorId";
 		$statement = $pdo->prepare($query);
+
 		try {
 			$authorId = self::validateUuid($authorId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
@@ -533,6 +534,29 @@ try{
 		return ($author);
 
 	}
+	 public function getAllAuthors(\PDO $pdo) : \SPLFixedArray{
+		 // create query template
+		 $query = "SELECT authorId, authorActivationToken, authorAvatarUrl, authorEmail, authorHash, authorUsername 
+						FROM author";
+		 $statement = $pdo->prepare($query);
+		 $statement->execute();
+
+		 $authors = new \SPLFixedArray($statement->rowCount());
+
+		 $statement->setFetchMode(\PDO::FETCH_ASSOC);
+
+		 while (($row = $statement->fetch()) !== false) {
+			 try {
+				 $author = new Author($row["authorId"], $row["authorActivationToken"], $row["authorAvatarUrl"], $row["authorEmail"], $row["authorHash"], $row["authorUsername"]);
+				 $authors[$authors->key()] = $author;
+				 $authors->next();
+			 } catch(\Exception $exception) {
+				 // if the row couldn't be converted, rethrow it
+				 throw(new \PDOException($exception->getMessage(), 0, $exception));
+			 }
+		 }
+		 return ($authors);
+	 }
 
 
 	/**

@@ -78,7 +78,7 @@ $author->insert($this->getPDO());
 		//check count of author record in the db after the insert
 		$numRowsAfterInsert = $this->getConnection()->getRowCount("author");
 		self::assertEquals($numRows + 1, $numRowsAfterInsert,"update checked record count");
-		//get a copy of the record just inserted and validate the values
+		//get a copy of the record just updated and validate the values
 		// make sure the values that went into the record are the same ones that come out
 		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId()->getBytes());
 		self::assertEquals($authorId,$pdoAuthor->getAuthorId());
@@ -95,18 +95,39 @@ $author->insert($this->getPDO());
 		//get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
 
-		//delete an author record in the db
-		$authorId = generateUuidV4()->getBytes();
-		$author = new Author($authorId,
-			$this->VALID_ACTIVATION_TOKEN,
-			$this->VALID_AVATAR_URL,
-			$this->VALID_AUTHOR_EMAIL,
-			$this->VALID_AUTHOR_HASH,
-			$this->VALID_USERNAME);
-		$author->delete($this->getPDO());
+		//insert multiple rows for testing
+		$insertedRow = 2;
+		for ($i=1;$i<=$insertedRow; $i++){
+			//insert  author record in the db
+			$authorId = generateUuidV4()->getBytes();
+			$author = new Author($authorId,
+				$this->VALID_ACTIVATION_TOKEN,
+				$this->VALID_AVATAR_URL,
+				$this->VALID_AUTHOR_EMAIL,
+				$this->VALID_AUTHOR_HASH,
+				$this->VALID_USERNAME);
+			$author->insert($this->getPDO());
+		}
+
 		//check count of author record in the db after the insert
 		$numRowsAfterDelete = $this->getConnection()->getRowCount("author");
-		self::assertEquals($numRows + 0, $numRowsAfterDelete,"delete, checked record count");
+		self::assertEquals($numRows, $numRowsAfterDelete,"delete, checked record count");
+
+		//now delete the record. It should not exist
+		$author->delete($this->getPDO());
+
+		//get a copy of the record just updated and validate the values
+		// make sure the values that went into the record are the same ones that come out
+		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId()->getBytes());
+		self::assertEquals($authorId,$pdoAuthor->getAuthorId());
+		self::assertEquals($this->VALID_ACTIVATION_TOKEN, $pdoAuthor->getAuthorActivationToken());
+		self::assertEquals($this->VALID_AVATAR_URL, $pdoAuthor->getAuthorAvatarUrl());
+		self::assertEquals($this->VALID_AUTHOR_EMAIL, $pdoAuthor->getAuthorEmail());
+		self::assertEquals($this->VALID_AUTHOR_HASH, $pdoAuthor->getAuthorHash());
+		//verify that the saved username is same as the updated username
+		//self::assertEquals($changedAunthorUsername, $pdoAuthor->getAuthorUsername());
+
+
 
 	}
 
@@ -128,9 +149,28 @@ $author->insert($this->getPDO());
 		self::assertEquals($numRows + 1, $numRowsAfter,"checked record count");
 	}
 
-/*
-	public function testGetValidAuthors() : void {
 
+	public function testGetValidAuthors() : void {
+		//how many records were in the db before we start?
+		$numRows = $this->getConnection()->getRowCount("author");
+		$rowsInserted = 5;
+
+		//now insert 5 rows of data
+		for ($i=0; $i<$rowsInserted; $i++){
+			$authorId = generateUuidV4()->toString();
+			$author = new Author($authorId, $this->VALID_ACTIVATION_TOKEN,
+				$this->VALID_AVATAR_URL,
+				$this->VALID_AUTHOR_EMAIL . $i,
+				$this->VALID_AUTHOR_HASH,
+				$this->VALID_USERNAME . $i);
+			$author->insert($this->getPDO());
+		}
+
+		//validate new row count in the table - should be old row count + 1 if insert is successful
+		self::assertEquals($numRows + $rowsInserted, $this->getConnection()->getRowCount("author"));
+
+		//validate number of rows coming back from our function.
+		self::assertEquals($numRows + $rowsInserted, $author->getAllAuthors($this->getPDO())->count());
 	}
-*/
+
 }
