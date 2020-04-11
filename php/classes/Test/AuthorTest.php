@@ -92,40 +92,41 @@ $author->insert($this->getPDO());
 	}
 
 	public function testDeletValidAuthor() : void {
+
 		//get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
 
-		//insert multiple rows for testing
+
 		$insertedRow = 2;
-		for ($i=1;$i<=$insertedRow; $i++){
+
+		//insert multiple rows for testing
+		for ($i=0; $i<=$insertedRow; $i++){
 			//insert  author record in the db
-			$authorId = generateUuidV4()->getBytes();
+			$authorId = generateUuidV4()->toString();
 			$author = new Author($authorId,
 				$this->VALID_ACTIVATION_TOKEN,
 				$this->VALID_AVATAR_URL,
-				$this->VALID_AUTHOR_EMAIL,
+				$this->VALID_AUTHOR_EMAIL . $i,
 				$this->VALID_AUTHOR_HASH,
-				$this->VALID_USERNAME);
+				$this->VALID_USERNAME . $i);
 			$author->insert($this->getPDO());
 		}
 
-		//check count of author record in the db after the insert
-		$numRowsAfterDelete = $this->getConnection()->getRowCount("author");
-		self::assertEquals($numRows, $numRowsAfterDelete,"delete, checked record count");
-
-		//now delete the record. It should not exist
-		$author->delete($this->getPDO());
-
 		//get a copy of the record just updated and validate the values
 		// make sure the values that went into the record are the same ones that come out
-		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId()->getBytes());
-		self::assertEquals($authorId,$pdoAuthor->getAuthorId());
-		self::assertEquals($this->VALID_ACTIVATION_TOKEN, $pdoAuthor->getAuthorActivationToken());
-		self::assertEquals($this->VALID_AVATAR_URL, $pdoAuthor->getAuthorAvatarUrl());
-		self::assertEquals($this->VALID_AUTHOR_EMAIL, $pdoAuthor->getAuthorEmail());
-		self::assertEquals($this->VALID_AUTHOR_HASH, $pdoAuthor->getAuthorHash());
-		//verify that the saved username is same as the updated username
-		//self::assertEquals($changedAunthorUsername, $pdoAuthor->getAuthorUsername());
+		$numRowsAfterInsert = $this->getConnection()->getRowCount("author");
+		self::assertEquals($numRows + $insertedRow, $numRowsAfterInsert);
+
+		//now delete the last record we inserted
+		$author->delete($this->getPDO());
+
+		//try to get the last record we inserted. it should not exist.
+		$pdoAuthor = Author::getAuthorByAuthorId($this->getPDO(), $author->getAuthorId()->toString());
+
+		//validate that only one record was deleted.
+		$numRowsAfterDelete = $this->getConnection()->getRowCount("author");
+		self::assertEquals($numRows + $insertedRow - 1, $numRowsAfterDelete);
+
 
 
 
