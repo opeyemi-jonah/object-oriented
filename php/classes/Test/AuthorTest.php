@@ -91,7 +91,7 @@ $author->insert($this->getPDO());
 
 	}
 
-	public function testDeletValidAuthor() : void {
+	public function testDeleteValidAuthor() : void {
 
 		//get count of author records in db before we run the test
 		$numRows = $this->getConnection()->getRowCount("author");
