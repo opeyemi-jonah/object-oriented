@@ -63,7 +63,7 @@ class Author implements \JsonSerializable  {
 	private $authorUsername;
 
 	/**
-	 * constructor for this Tweet
+	 * constructor for this Author
 	 *
 	 * @param string|Uuid $newAuthorId id of the author
 	 * @param string $newAuthorActivationToken string containing Activation token
